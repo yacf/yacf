@@ -12,7 +12,7 @@ class PageType(DjangoObjectType):
 
 class Query(graphene.ObjectType):
     pages = graphene.List(PageType)
-    page = graphene.Field(PageType, url=graphene.String())
+    page = graphene.Field(PageType, id=graphene.Int(), url=graphene.String())
 
     def resolve_pages(self, info, **kwargs):
         validate_user_is_authenticated(info.context.user)
@@ -20,7 +20,12 @@ class Query(graphene.ObjectType):
 
     def resolve_page(self, info, **kwargs):
         validate_user_is_authenticated(info.context.user)
-        return Page.objects.get(url=kwargs.get('url'))
+        if kwargs.get('id') and kwargs.get('url'):
+            return Page.objects.get(pk=kwargs.get('id'), url=kwargs.get('url'))
+        if kwargs.get('id'):
+            return Page.objects.get(pk=kwargs.get('id'))
+        if kwargs.get('url'):
+            return Page.objects.get(url=kwargs.get('url'))
 
 # ------------------- MUTATIONS -------------------
 
@@ -39,6 +44,36 @@ class CreatePage(graphene.Mutation):
         page.save()
 
         return CreatePage(message="Added")
+    
+class UpdatePage(graphene.Mutation):
+    message = graphene.String()
+
+    class Arguments:
+        id  = graphene.Int(required=True)
+        name = graphene.String(required=False)
+        url  = graphene.String(required=False)
+        content = graphene.String(required=False)
+
+    def mutate(self, info, id, name=None, url=None, content=None):
+        validate_user_is_admin(info.context.user)
+        
+        #TODO: Catch and send custom error message
+        page = Page.objects.get(pk=id)
+
+        if not name and not url and not content:
+            raise Exception('Nothing to update') 
+
+        if name:
+            page.name = name
+        if url:
+            page.url = url
+        if content:
+            page.content = content
+
+        page.save()
+
+        return UpdatePage(message="Updated")
 
 class Mutation(object):
     createpage = CreatePage.Field()
+    updatepage = UpdatePage.Field()

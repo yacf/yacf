@@ -22,8 +22,8 @@
               <td>{{page.url}}</td>
               <td>
                 <div>
-                  <!-- <RemoveChallenge :challenge="challenge" />
-                  <router-link tag="button" class="btn btn-secondary btn-sm" style="float: right" :to="{ name: 'adminEditChallenge', params: { challenge: challenge } }">Edit</router-link>-->
+                  <!-- <RemoveChallenge :challenge="challenge" /> -->
+                  <router-link tag="button" class="btn btn-secondary btn-sm" style="float: right" :to="{ name: 'AdminEditPages', params: { id: page.id } }">Edit</router-link>
                 </div>
               </td>
             </tr>

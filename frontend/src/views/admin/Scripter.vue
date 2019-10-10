@@ -1,17 +1,10 @@
 <template>
-  <div class="offset">
-    <v-jsoneditor v-model="yaml" :plus="false" height="600px" @error="onError" />
-  </div>
+  <div class="offset">Blank</div>
 </template>
 
 <script>
-import VJsoneditor from "v-jsoneditor";
-
 export default {
   name: "Scripter",
-  components: {
-    VJsoneditor
-  },
   data() {
     return {
       yaml: {

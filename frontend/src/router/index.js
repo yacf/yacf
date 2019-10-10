@@ -73,6 +73,12 @@ export default new Router({
               component: () => import("@/views/admin/Create/Page")
             },
             {
+              path: "/admin/pages/edit",
+              name: "AdminEditPages",
+              props: true,
+              component: () => import("@/views/admin/Edit/Page")
+            },
+            {
               path: "/admin/categories",
               name: "AdminCategories",
               component: () => import("@/views/admin/Categories")
