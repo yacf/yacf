@@ -9,7 +9,7 @@
       <label>Challenge Points:</label>
       <input class="form-control" v-model="challenge.points" />
       <label>Challenge Flag:</label>
-      <input class="form-control" v-model="challenge.flag" />
+      <input class="form-control" v-model="flag" />
       <label>Challenge Category:</label>
       <select class="form-control" v-model="challenge.category.name">
         <option v-bind:default="challenge.category.name">{{challenge.category.name}}</option>
@@ -38,7 +38,8 @@ export default {
     return {
       loading: true,
       categories: [],
-      message: ""
+      message: "",
+      flag: ""
     };
   },
   beforeMount() {
@@ -53,7 +54,7 @@ export default {
       var str = this.challenge.description.replace(re, "\\n");
       let that = this;
       api(
-        `mutation { updateChallenge(id:${this.challenge.id}, name:"${this.challenge.name}", description:"${str}", points:${this.challenge.points}, flag:"${this.challenge.flag}", show:false, category:"${this.challenge.category.name}"){ message} }`
+        `mutation { updateChallenge(id:${this.challenge.id}, name:"${this.challenge.name}", description:"${str}", points:${this.challenge.points}, flag:"${this.flag}", show:false, category:"${this.challenge.category.name}"){ message} }`
       ).then(data => {
         that.message = data.updateChallenge.message;
       });

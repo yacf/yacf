@@ -139,22 +139,22 @@ class UpdateChallenge(graphene.Mutation):
     def mutate(self, info, id, name, description, points=0, flag="", show=False, category=None):
         validate_user_is_admin(info.context.user)
 
-        try:
-            category = Category.objects.get(name=category)
-            challenge = Challenge.objects.get(pk=id)
-            challenge.name = name
-            challenge.description = description
-            challenge.points = points
-            challenge.flag = flag
-            challenge.show = show
-            challenge.category = category
+        # try:
+        category = Category.objects.get(name=category)
+        challenge = Challenge.objects.get(pk=id)
+        challenge.name = name
+        challenge.description = description
+        challenge.points = points
+        challenge.flag.value = flag
+        challenge.show = show
+        challenge.category = category
 
-            challenge.save()
+        challenge.save()
 
 
-            message = "success"
-        except:
-            message = "failure"
+        message = "success"
+        # except:
+        #     message = "failure"
 
         return UpdateChallenge(message)
 

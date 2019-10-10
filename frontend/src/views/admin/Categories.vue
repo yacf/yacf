@@ -29,7 +29,7 @@
               <td>
                 <div>
                   <RemoveCategory :category="category" />
-                  <router-link tag="button" class="btn btn-secondary btn-sm" style="float: right" :to="{ name: 'adminEditCategory', params: { category: category } }">Edit</router-link>
+                  <router-link tag="button" class="btn btn-secondary btn-sm" style="float: right" :to="{ name: 'AdminCategoryEdit', params: { category: category } }">Edit</router-link>
                 </div>
               </td>
             </tr>

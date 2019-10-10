@@ -29,7 +29,7 @@
               <td>
                 <div>
                   <RemoveChallenge :challenge="challenge" />
-                  <router-link tag="button" class="btn btn-secondary btn-sm" style="float: right" :to="{ name: 'adminEditChallenge', params: { challenge: challenge } }">Edit</router-link>
+                  <router-link tag="button" class="btn btn-secondary btn-sm" style="float: right" :to="{ name: 'AdminChallengeEdit', params: { challenge: challenge } }">Edit</router-link>
                 </div>
               </td>
             </tr>

@@ -114,7 +114,7 @@ class UpdateTeam(graphene.Mutation):
             team.affiliation = affiliation
             team.email = email
             team.website = website
-            team.accesscode = accesscode
+            team.accesscode.value = accesscode
             team.save()
 
             message = "success"

@@ -33,7 +33,7 @@
               <td>
                 <div>
                   <RemoveTeam :team="team" />
-                  <router-link tag="button" class="btn btn-secondary btn-sm" style="float: right" :to="{ name: 'adminEditTeam', params: { team: team } }">Edit</router-link>
+                  <router-link tag="button" class="btn btn-secondary btn-sm" style="float: right" :to="{ name: 'AdminTeamEdit', params: { team: team } }">Edit</router-link>
                 </div>
               </td>
             </tr>
