@@ -22,7 +22,7 @@
               <td>{{page.url}}</td>
               <td>
                 <div>
-                  <!-- <RemoveChallenge :challenge="challenge" /> -->
+                  <RemovePage :page="page" />
                   <router-link tag="button" class="btn btn-secondary btn-sm" style="float: right" :to="{ name: 'AdminEditPages', params: { id: page.id } }">Edit</router-link>
                 </div>
               </td>
@@ -37,10 +37,11 @@
 <script>
 import { api } from "@/utils/api";
 import AddPage from "@/components/admin/add/Page.vue";
+import RemovePage from "@/components/admin/remove/page.vue";
 
 export default {
   name: "Pages",
-  components: { AddPage },
+  components: { AddPage, RemovePage },
   data() {
     return {
       loading: true,

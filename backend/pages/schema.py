@@ -74,6 +74,22 @@ class UpdatePage(graphene.Mutation):
 
         return UpdatePage(message="Updated")
 
+class DeletePage(graphene.Mutation):
+    message = graphene.String()
+
+    class Arguments:
+        id  = graphene.Int(required=True)
+
+    def mutate(self, info, id):
+        validate_user_is_admin(info.context.user)
+        
+        #TODO: Catch and send custom error message
+        page = Page.objects.get(pk=id)
+        page.delete()
+
+        return DeletePage(message="Deleted")
+
 class Mutation(object):
     createpage = CreatePage.Field()
     updatepage = UpdatePage.Field()
+    deletePage = DeletePage.Field()
