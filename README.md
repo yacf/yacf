@@ -2,4 +2,4 @@
 
 ## Yet Another CTF Framework
 
-Welcome to the home of YACF code repository. Please visit the docs at www.docs.yacf.io!
+Welcome to the home of YACF code repository. Please visit the docs at www.yacf.io!
