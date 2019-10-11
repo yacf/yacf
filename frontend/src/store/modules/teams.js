@@ -36,7 +36,7 @@ const actions = {
     });
   },
   loadTeams({ commit }) {
-    api("query{ teams {id, name, points, correctFlags, wrongFlags} totalPoints }").then(data => {
+    api("query{ teams {id, name, affiliation, website, points, correctFlags, wrongFlags} totalPoints }").then(data => {
       commit("SET_TEAMS", data.teams);
       commit("SET_MAX_POINTS", data.totalPoints);
     });

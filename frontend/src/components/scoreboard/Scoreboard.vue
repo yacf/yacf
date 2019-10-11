@@ -6,6 +6,8 @@
         <tr>
           <th>Rank</th>
           <th>Team name</th>
+          <th>Affiliation</th>
+          <th>Web Site</th>
           <th>Correct Flags</th>
           <th>Wrong Flags</th>
           <th>Score</th>
@@ -16,6 +18,8 @@
         <tr v-for="(team, index) in teams" :key="team.id" style="cursor: pointer;" @click="$router.push(`/team/${team.name}`);">
           <td>{{index+1}}</td>
           <td>{{team.name}}</td>
+          <td>{{team.affiliation}}</td>
+          <td>{{team.website}}</td>
           <td>{{team.correctFlags}}</td>
           <td>{{team.wrongFlags}}</td>
           <td>{{team.points}}</td>
