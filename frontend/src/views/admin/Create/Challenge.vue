@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="offset">
     <h3>Add Challenge</h3>
     <label>Challenge name:</label>
     <input class="form-control" v-model="name" />
@@ -44,10 +44,12 @@ export default {
   methods: {
     addChallenge() {
       var query = "";
+      var chal = btoa(unescape(encodeURIComponent(this.content)));
+
       if (this.category == "None" || this.category == "") {
-        query = `mutation{ addChallenge(name:"${this.name}", description:"${this.description}", points:${this.points}, flag:"${this.flag}", show:true) { message } }`;
+        query = `mutation{ addChallenge(name:"${this.name}", description:"${chal}", points:${this.points}, flag:"${this.flag}", show:true) { message } }`;
       } else {
-        query = `mutation{ addChallenge(name:"${this.name}", description:"${this.description}", points:${this.points}, flag:"${this.flag}", show:true, category:"${this.category}") { message } }`;
+        query = `mutation{ addChallenge(name:"${this.name}", description:"${chal}", points:${this.points}, flag:"${this.flag}", show:true, category:"${this.category}") { message } }`;
       }
 
       let that = this;

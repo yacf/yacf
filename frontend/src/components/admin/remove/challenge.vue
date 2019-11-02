@@ -1,7 +1,9 @@
 <template>
   <div style="float: right;">
     <!-- Modal Component -->
-    <button class="btn btn-sm btn-danger" v-b-modal="challenge.id" style="margin-left: 5px;">Remove</button>
+    <button class="btn btn-sm btn-danger" v-b-modal="challenge.id" style="margin-left: 5px;">
+      <font-awesome-icon :icon="trash" id="navbar-icon" />
+    </button>
     <b-modal v-bind:id="challenge.id" v-bind:title="title" ok-title="Confirm Remove" ok-variant="danger" @ok="handleOk">
       <p>
         Are you sure you want to
@@ -16,6 +18,7 @@
 
 <script>
 import { api } from "@/utils/api.js";
+import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 
 export default {
   name: "Challenges",
@@ -29,6 +32,9 @@ export default {
   computed: {
     title() {
       return "Deleting " + this.challenge.name;
+    },
+    trash() {
+      return faTrashAlt;
     }
   },
   methods: {

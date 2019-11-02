@@ -10,6 +10,8 @@ import { WebSocketBridge } from "django-channels";
 
 import { api } from "@/utils/api.js";
 
+import createPersistedState from "vuex-persistedstate";
+
 const socket = new WebSocketBridge();
 
 // socket.connect('ws://team/stream/');
@@ -131,7 +133,7 @@ export default new Vuex.Store({
         state.graphlabels.push(payload.time);
       }
     }
-  }
-
+  },
   // plugins: [plugin]
+  plugins: [createPersistedState()]
 });

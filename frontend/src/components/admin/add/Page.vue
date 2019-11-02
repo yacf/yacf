@@ -7,6 +7,7 @@
     <input class="form-control" v-model="url" />
     <label>Page Content:</label>
     <MonacoEditor height="500" theme="vs" language="html" v-model="content" :options="options"></MonacoEditor>
+    <b-form-checkbox id="checkbox-1" v-model="auth" name="checkbox-1" value="true" unchecked-value="false">Authentication Required</b-form-checkbox>
     <p>{{message}}</p>
     <button class="btn btn-secondary" @click="addPage()">Add Page</button>
   </div>
@@ -25,6 +26,7 @@ export default {
       url: "",
       content: "",
       message: "",
+      auth: "true",
       options: {
         //Monaco Editor Options
       }

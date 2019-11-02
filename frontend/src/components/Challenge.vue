@@ -31,7 +31,7 @@ export default {
     return {
       loading: true,
       challenge: "",
-
+      flag: "",
       solved: false,
       message: ""
     };

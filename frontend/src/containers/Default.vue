@@ -7,8 +7,8 @@
 
       <b-collapse is-nav id="main_nav_collapse">
         <b-navbar-nav>
-          <b-nav-item @click="$router.push({ name: 'Scoreboard'});">Scoreboard</b-nav-item>
-          <b-nav-item @click="$router.push({ name: 'Challenges'});">Challenges</b-nav-item>
+          <b-nav-item v-if="auth" @click="$router.push({ name: 'Scoreboard'});">Scoreboard</b-nav-item>
+          <b-nav-item v-if="auth" @click="$router.push({ name: 'Challenges'});">Challenges</b-nav-item>
           <b-nav-item v-for="page in pages" :key="page.id" @click="$router.push({ name: 'Page', params: { 'url': page.url }});">{{page.name}}</b-nav-item>
         </b-navbar-nav>
 
@@ -16,17 +16,24 @@
           <b-nav-item v-if="this.$store.getters['user/isAdmin']" @click="$router.push({ name: 'AdminMission'});">Admin Dashboard</b-nav-item>
           <b-nav-item v-else @click="$router.push(`/team/${$store.getters['user/userteam']}`);">{{this.$store.getters['user/userteam']}}</b-nav-item>
 
-          <b-nav-item-dropdown right>
-            <template slot="button-content">
-              <span>{{$store.getters['user/initials']}}</span>
-            </template>
-            <b-dropdown-item @click="$router.push(`/profile`);">Profile</b-dropdown-item>
-            <b-dropdown-item @click="logout">Signout</b-dropdown-item>
-          </b-nav-item-dropdown>
+          <template v-if="auth">
+            <b-nav-item-dropdown right>
+              <template slot="button-content">
+                <span>{{$store.getters['user/initials']}}</span>
+              </template>
+              <b-dropdown-item @click="$router.push(`/profile`);">Profile</b-dropdown-item>
+              <b-dropdown-item @click="logout">Signout</b-dropdown-item>
+            </b-nav-item-dropdown>
+          </template>
+          <template v-else>
+            <b-navbar-nav>
+              <b-nav-item @click="$router.push({ name: 'Login'});">Login</b-nav-item>
+            </b-navbar-nav>
+          </template>
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
-    <router-view />
+    <router-view></router-view>
     <!-- <div class="navbar fixed-bottom">
       <div>
         <span class="text-muted" style="font-size: 12px;">
@@ -51,7 +58,8 @@ export default {
   },
   computed: {
     ...mapGetters({
-      theme: "theme/GET_THEME"
+      theme: "theme/GET_THEME",
+      auth: "user/auth"
     })
   },
   created() {

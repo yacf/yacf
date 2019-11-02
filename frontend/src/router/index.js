@@ -15,7 +15,6 @@ export default new Router({
       component: () => import("@/containers/Default"),
       redirect: { name: "Home" },
       name: "Root",
-      beforeEnter: graud,
       children: [
         {
           path: "/_",
@@ -25,16 +24,19 @@ export default new Router({
         {
           path: "/challenges",
           name: "Challenges",
+          beforeEnter: graud,
           component: () => import("@/views/Challenges")
         },
         {
           path: "/challenge/:category/:points",
           name: "Statistics",
+          beforeEnter: graud,
           component: () => import("@/views/Statistics")
         },
         {
           path: "/scoreboard",
           name: "Scoreboard",
+          beforeEnter: graud,
           component: () => import("@/views/Scoreboard")
         },
         {
@@ -45,106 +47,8 @@ export default new Router({
         {
           path: "/team/:name",
           name: "Team",
+          beforeEnter: graud,
           component: () => import("@/views/Team")
-        },
-        {
-          path: "/admin",
-          name: "Admin",
-          component: () => import("@/views/Admin"),
-          children: [
-            {
-              path: "/admin/default",
-              name: "AdminDefault",
-              component: () => import("@/containers/Admin")
-            },
-            // {
-            //   path: "/admin-o/mission",
-            //   name: "AdminMission",
-            //   component: () => import("@/views/admin/Mission")
-            // },
-            // {
-            //   path: "/admin-o/welcome",
-            //   name: "AdminWelcome",
-            //   component: () => import("@/views/admin/Welcome")
-            // },
-            // {
-            //   path: "/admin-o/pages",
-            //   name: "AdminPages",
-            //   component: () => import("@/views/admin/Pages")
-            // },
-
-            // {
-            //   path: "/admin-o/categories",
-            //   name: "AdminCategories",
-            //   component: () => import("@/views/admin/Categories")
-            // },
-            // {
-            //   path: "/admin-o/category/edit",
-            //   name: "AdminCategoryEdit",
-            //   component: () => import("@/views/admin/Edit/Category"),
-            //   props: true
-            // },
-            // {
-            //   path: "/admin-o/challenges",
-            //   name: "AdminChallenges",
-            //   component: () => import("@/views/admin/Challenges")
-            // },
-            // {
-            //   path: "/admin-o/challenge/edit",
-            //   name: "AdminChallengeEdit",
-            //   component: () => import("@/views/admin/Edit/Challenge"),
-            //   props: true
-            // },
-            // {
-            //   path: "/admin-o/teams",
-            //   name: "AdminTeams",
-            //   component: () => import("@/views/admin/Teams")
-            // },
-            // {
-            //   path: "/admin-o/team/edit",
-            //   name: "AdminTeamEdit",
-            //   component: () => import("@/views/admin/Edit/Team"),
-            //   props: true
-            // },
-            // {
-            //   path: "/admin-o/users",
-            //   name: "AdminUsers",
-            //   component: () => import("@/views/admin/Users")
-            // },
-            // {
-            //   path: "/admin-o/user/edit",
-            //   name: "AdminUserEdit",
-            //   component: () => import("@/views/admin/Edit/User"),
-            //   props: true
-            // },
-            // {
-            //   path: "/admin-o/solves",
-            //   name: "AdminSolves",
-            //   component: () => import("@/views/admin/Solves")
-            // },
-            // {
-            //   path: "/admin-o/surveys",
-            //   name: "AdminSurveys",
-            //   component: () => import("@/views/admin/Surveys")
-            // },
-            // {
-            //   path: "/admin-o/settings",
-            //   name: "AdminSettings",
-            //   component: () => import("@/views/admin/Settings")
-            // },
-            {
-              path: "/admin-o/scripter",
-              name: "AdminScripter",
-              component: () => import("@/views/admin/Scripter")
-            },
-            {
-              path: "/admin-o/test",
-              name: "Test",
-              component: () => import("@/views/admin/Test"),
-              props: true
-            }
-          ],
-          beforeEnter: superusergraud
         }
       ]
     },
@@ -180,6 +84,11 @@ export default new Router({
           path: "/admin/challenges",
           name: "AdminChallenges",
           component: () => import("@/views/admin/Challenges")
+        },
+        {
+          path: "/admin/challenge/create",
+          name: "AdminChallengesCreate",
+          component: () => import("@/views/admin/Create/Challenge")
         },
         {
           path: "/admin/challenge/edit",

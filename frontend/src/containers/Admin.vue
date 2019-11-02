@@ -7,49 +7,49 @@
         <span class="text-muted" id="sidebar-nav-heading">Operations</span>
 
         <router-link tag="link" class="bg-light" id="sidebar-nav-item" :to="{ name: 'AdminMission' }">
-          <font-awesome-icon :icon="rocket" />
+          <font-awesome-icon :icon="rocket" id="navbar-icon" />
           <span id="sidebar-nav-value">Mission Control</span>
         </router-link>
         <router-link tag="link" class="bg-light" id="sidebar-nav-item" :to="{ name: 'AdminSolves' }">
-          <font-awesome-icon :icon="check" />
+          <font-awesome-icon :icon="check" id="navbar-icon" />
           <span id="sidebar-nav-value">Solves</span>
         </router-link>
 
         <span class="text-muted" id="sidebar-nav-heading">Event</span>
         <router-link tag="link" class="bg-light" id="sidebar-nav-item" :to="{ name: 'AdminCategories' }">
-          <font-awesome-icon :icon="stream" />
+          <font-awesome-icon :icon="stream" id="navbar-icon" />
           <span id="sidebar-nav-value">Categories</span>
         </router-link>
         <router-link tag="link" class="bg-light" id="sidebar-nav-item" :to="{ name: 'AdminChallenges' }">
-          <font-awesome-icon :icon="question" />
+          <font-awesome-icon :icon="question" id="navbar-icon" />
           <span id="sidebar-nav-value">Challenges</span>
         </router-link>
 
         <span class="text-muted" id="sidebar-nav-heading">Accounts</span>
         <router-link tag="link" class="bg-light" id="sidebar-nav-item" :to="{ name: 'AdminTeams' }">
-          <font-awesome-icon :icon="team" />
+          <font-awesome-icon :icon="team" id="navbar-icon" />
           <span id="sidebar-nav-value">Teams</span>
         </router-link>
         <router-link tag="link" class="bg-light" id="sidebar-nav-item" :to="{ name: 'AdminUsers' }">
-          <font-awesome-icon :icon="user" />
+          <font-awesome-icon :icon="user" id="navbar-icon" />
           <span id="sidebar-nav-value">Users</span>
         </router-link>
         <router-link tag="link" class="bg-light" id="sidebar-nav-item" :to="{ name: 'AdminSurveys' }">
-          <font-awesome-icon :icon="poll" />
+          <font-awesome-icon :icon="poll" id="navbar-icon" />
           <span id="sidebar-nav-value">Surveys</span>
         </router-link>
 
         <span class="text-muted" id="sidebar-nav-heading">Configuration</span>
         <router-link tag="link" class="bg-light" id="sidebar-nav-item" :to="{ name: 'AdminWelcome' }">
-          <font-awesome-icon :icon="home" />
+          <font-awesome-icon :icon="home" id="navbar-icon" />
           <span id="sidebar-nav-value">Home</span>
         </router-link>
         <router-link tag="link" class="bg-light" id="sidebar-nav-item" :to="{ name: 'AdminPages' }">
-          <font-awesome-icon :icon="copy" />
+          <font-awesome-icon :icon="copy" id="navbar-icon" />
           <span id="sidebar-nav-value">Pages</span>
         </router-link>
         <router-link tag="link" class="bg-light" id="sidebar-nav-item" :to="{ name: 'AdminSettings' }">
-          <font-awesome-icon :icon="setting" />
+          <font-awesome-icon :icon="setting" id="navbar-icon" />
           <span id="sidebar-nav-value">Settings</span>
         </router-link>
       </div>
@@ -188,10 +188,14 @@ body {
   margin: 0;
 }
 
+#navbar-icon {
+  width: 20px;
+}
+
 #sidebar-nav-item {
   position: relative;
   display: block;
-  padding: 0.75rem 1.25rem;
+  padding: 0.75rem 1.75rem;
   width: 100%;
   color: #495057;
   text-align: inherit;

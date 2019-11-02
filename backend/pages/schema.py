@@ -15,17 +15,26 @@ class Query(graphene.ObjectType):
     page = graphene.Field(PageType, id=graphene.Int(), url=graphene.String())
 
     def resolve_pages(self, info, **kwargs):
-        validate_user_is_authenticated(info.context.user)
-        return Page.objects.all()
+        if info.context.user.is_anonymous:
+            return Page.objects.filter(authenticated=False)
+        else:
+            return Page.objects.all()
 
     def resolve_page(self, info, **kwargs):
-        validate_user_is_authenticated(info.context.user)
-        if kwargs.get('id') and kwargs.get('url'):
-            return Page.objects.get(pk=kwargs.get('id'), url=kwargs.get('url'))
-        if kwargs.get('id'):
-            return Page.objects.get(pk=kwargs.get('id'))
-        if kwargs.get('url'):
-            return Page.objects.get(url=kwargs.get('url'))
+        if info.context.user.is_anonymous:
+            if kwargs.get('id') and kwargs.get('url'):
+                return Page.objects.get(pk=kwargs.get('id'), url=kwargs.get('url'), authenticated=False)
+            if kwargs.get('id'):
+                return Page.objects.get(pk=kwargs.get('id'), authenticated=False)
+            if kwargs.get('url'):
+                return Page.objects.get(url=kwargs.get('url'), authenticated=False)
+        else:
+            if kwargs.get('id') and kwargs.get('url'):
+                return Page.objects.get(pk=kwargs.get('id'), url=kwargs.get('url'))
+            if kwargs.get('id'):
+                return Page.objects.get(pk=kwargs.get('id'))
+            if kwargs.get('url'):
+                return Page.objects.get(url=kwargs.get('url'))
 
 # ------------------- MUTATIONS -------------------
 

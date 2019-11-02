@@ -36,6 +36,7 @@ class HintType(DjangoObjectType):
 class Query(graphene.ObjectType):
     challenges = graphene.List(ChallengeType)
     challenge = graphene.Field(ChallengeType, id=graphene.Int())
+    flag = graphene.Field(FlagType, cid=graphene.Int())
 
     statistic = graphene.Field(ChallengeType, category=graphene.String(), points=graphene.Int())
     total_points = graphene.Int()
@@ -51,6 +52,9 @@ class Query(graphene.ObjectType):
         validate_user_is_authenticated(info.context.user)
         return Challenge.objects.get(pk=kwargs.get('id'))
 
+    def resolve_flag(self, info, **kwargs):
+        validate_user_is_admin(info.context.user)
+        return Flag.objects.get(challenge__pk=kwargs.get('cid'))
 
     def resolve_statistic(self, info, **kwargs):
         validate_user_is_authenticated(info.context.user)

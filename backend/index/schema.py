@@ -13,7 +13,6 @@ class Query(graphene.ObjectType):
     welcomePage = graphene.Field(WelcomePageType)
 
     def resolve_welcomePage(self, info, **kwargs):
-        validate_user_is_authenticated(info.context.user)
         return WelcomePage.objects.all().first()
 
 # ------------------- MUTATIONS -------------------

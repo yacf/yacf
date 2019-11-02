@@ -3,39 +3,35 @@
     <div v-if="loading">Yo, we loadin'. Hang tight</div>
     <div v-else>
       <div class="newOpt">
-        <button class="btn btn-secondary" @click="showNew = !showNew">New Challenge</button>
+        <button class="btn btn-secondary" @click="$router.push({ name: 'AdminChallengesCreate'});">New Challenge</button>
       </div>
-      <div v-if="showNew">
-        <b-card header="New Challenge" header-tag="header">
-          <AddChallenge />
-        </b-card>
-        <hr />
-      </div>
-      <b-card header="Challenge" header-tag="header">
-        <table id="adminchallenge" class="table">
-          <thead>
-            <tr>
-              <th>Challenge</th>
-              <th>Description</th>
-              <th>Points</th>
-              <th style="text-align: right;">Options</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="challenge in challenges" v-bind:key="challenge.id">
-              <td>{{challenge.name}}</td>
-              <td>{{challenge.description}}</td>
-              <td>{{challenge.points}}</td>
-              <td>
-                <div>
-                  <RemoveChallenge :challenge="challenge" />
-                  <router-link tag="button" class="btn btn-secondary btn-sm" style="float: right" :to="{ name: 'AdminChallengeEdit', params: { challenge: challenge } }">Edit</router-link>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </b-card>
+
+      <table id="adminchallenge" class="table table-striped table-sm">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Challenge</th>
+            <th>Description</th>
+            <th>Points</th>
+            <th style="text-align: right;">Options</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="challenge in challenges" v-bind:key="challenge.id">
+            <td>{{challenge.id}}</td>
+            <td>{{challenge.name}}</td>
+            <td>{{challenge.description}}</td>
+            <td>{{challenge.points}}</td>
+            <td>
+              <div>
+                <RemoveChallenge :challenge="challenge" />
+                <router-link tag="button" class="btn btn-secondary btn-sm" style="float: right" :to="{ name: 'AdminChallengeEdit', params: { challenge: challenge } }">Edit</router-link>
+                <AdminViewFlag :cid="challenge.id" />
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </template>
@@ -43,16 +39,15 @@
 
 <script>
 import { api } from "@/utils/api";
-import AddChallenge from "@/components/admin/add/challenge.vue";
 import RemoveChallenge from "@/components/admin/remove/challenge.vue";
+import AdminViewFlag from "@/components/admin/AdminViewFlag.vue";
 
 export default {
   name: "AdminChallenge",
-  components: { AddChallenge, RemoveChallenge },
+  components: { RemoveChallenge, AdminViewFlag },
   data() {
     return {
       loading: true,
-      showNew: false,
       challenges: []
     };
   },
