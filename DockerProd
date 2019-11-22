@@ -40,8 +40,8 @@ COPY --from=builder /app/dist/ /var/www/backend/static/
 RUN chmod 664 /var/www/backend/db.sqlite3
 RUN chown -R www-data:www-data /var/www/
 
-COPY scripts/apache/000-default.conf /etc/apache2/sites-available/000-default.conf
-COPY scripts/apache/default-ssl.conf /etc/apache2/sites-available/default-ssl.conf
+COPY scripts/apache/https/000-default.conf /etc/apache2/sites-available/000-default.conf
+COPY scripts/apache/https/default-ssl.conf /etc/apache2/sites-available/default-ssl.conf
 
 RUN a2enmod rewrite
 RUN a2enmod ssl
