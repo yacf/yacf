@@ -8,7 +8,7 @@ from uauth.validators import validate_user_is_authenticated, validate_user_is_ad
 from settings.validators import validate_active_event
 
 from categories.models import Category
-from challenges.models import Challenge, Flag, Hint
+from challenges.models import Challenge, Flag, Hash, Hint
 from teams.models import SolvedChallenge, Failure
 from uauth.models import Profile
 
@@ -82,37 +82,36 @@ class AddChallenge(graphene.Mutation):
         description = graphene.String(required=True)
         points      = graphene.Int(required=False)
         flag        = graphene.String(required=False)
-        show        = graphene.Boolean(required=False)
+        algorithm   = graphene.String(required=False)
+        hidden        = graphene.Boolean(required=False)
 
         category    = graphene.String(required=False)
 
     #TODO: Need to check and ensure no challenge is made with the same points as another challenge. If not, frontend stats break
     #TODO: Just fix the frontend :) ^^
-    def mutate(self, info, name, description, points=0, flag="", show=False, category=None):
+    def mutate(self, info, name, description, points=0, flag="", algorithm="", hidden=False, category=None):
         validate_user_is_admin(info.context.user)
 
-        try:
-            if category:
-                try:
-                    category = Category.objects.get(name=category)
-                    newChallenge = Challenge(name=name, description=description, points=points, show=show, category=category)
-                    newChallenge.save()
-                    flag = Flag(value=hashlib.md5(flag.encode('utf-8')).hexdigest(), challenge=newChallenge)
-                    flag.save()
-                except:
-                    # Category not found
-                    message = "failure"
+        if category:
+            category = Category.objects.get(name=category)
+        
+        if algorithm:
+            algorithm = Hash.objects.get(value=algorithm)
+        
+        if category:
+            newChallenge = Challenge(name=name, description=description, points=points, hidden=hidden, category=category)
+        else:
+            newChallenge = Challenge(name=name, description=description, points=points, hidden=hidden)
+        newChallenge.save()
+
+        if flag:
+            if algorithm:
+                flag = Flag(value=flag, algorithm=algorithm, challenge=newChallenge)
             else:
-                newChallenge = Challenge(name=name, description=description, points=points, show=show)
-                newChallenge.save()
                 flag = Flag(value=flag, challenge=newChallenge)
-                flag.save()
+            flag.save()
 
-            message = "success"
-        except:
-            message = "failure"
-
-        return AddChallenge(message)
+        return AddChallenge(message="Success")
 
 class RemoveChallenge(graphene.Mutation):
     code = graphene.Int()

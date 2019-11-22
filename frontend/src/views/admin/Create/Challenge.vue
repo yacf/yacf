@@ -11,7 +11,7 @@
       <label>Challenge Flag:</label>
       <input class="form-control" v-model="flag" />
       <label>Flag Hash:</label>
-      <select class="form-control" v-model="algo">
+      <select class="form-control" v-model="algorithm">
         <option value="None" v-bind:default="true">None</option>
         <option value="md5">MD5</option>
         <option value="sha224">SHA224</option>
@@ -28,7 +28,7 @@
       </select>
       <b-form-checkbox
         id="checkbox-1"
-        v-model="auth"
+        v-model="hidden"
         name="checkbox-1"
         value="true"
         unchecked-value="false"
@@ -52,7 +52,9 @@ export default {
       description: "",
       points: "",
       flag: "",
-      category: "",
+      algorithm: "None",
+      category: "None",
+      hidden: false,
       message: ""
     };
   },
@@ -68,9 +70,9 @@ export default {
       var chal = btoa(unescape(encodeURIComponent(this.content)));
 
       if (this.category == "None" || this.category == "") {
-        query = `mutation{ addChallenge(name:"${this.name}", description:"${chal}", points:${this.points}, flag:"${this.flag}", show:true) { message } }`;
+        query = `mutation{ addChallenge(name:"${this.name}", description:"${chal}", points:${this.points}, flag:"${this.flag}", algorithm:${this.algorithm} hidden:${this.hidden}) { message } }`;
       } else {
-        query = `mutation{ addChallenge(name:"${this.name}", description:"${chal}", points:${this.points}, flag:"${this.flag}", show:true, category:"${this.category}") { message } }`;
+        query = `mutation{ addChallenge(name:"${this.name}", description:"${chal}", points:${this.points}, flag:"${this.flag}", hidden:${this.hidden}, category:"${this.category}") { message } }`;
       }
 
       let that = this;
