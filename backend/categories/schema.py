@@ -1,6 +1,7 @@
 import graphene
 from graphene_django import DjangoObjectType
 from uauth.validators import validate_user_is_authenticated, validate_user_is_admin, validate_user_is_staff
+from settings.validators import validate_active_event
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 
@@ -18,6 +19,7 @@ class Query(graphene.ObjectType):
         if validate_user_is_staff(info.context.user):
             return Category.objects.all()
         else:
+            validate_active_event()
             return Category.objects.filter(hidden=False)
 
 # ------------------- MUTATIONS -------------------

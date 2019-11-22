@@ -5,6 +5,7 @@ import hashlib
 import graphene
 from graphene_django import DjangoObjectType
 from uauth.validators import validate_user_is_authenticated, validate_user_is_admin, validate_user_is_staff
+from settings.validators import validate_active_event
 
 from categories.models import Category
 from challenges.models import Challenge, Flag, Hint
@@ -46,11 +47,16 @@ class Query(graphene.ObjectType):
         if validate_user_is_staff(info.context.user):
             return Challenge.objects.all().order_by('points')
         else:
+            validate_active_event()
             return Challenge.objects.filter(category__hidden=False, hidden=False).order_by('points')
 
     def resolve_challenge(self, info, **kwargs):
         validate_user_is_authenticated(info.context.user)
-        return Challenge.objects.get(pk=kwargs.get('id'))
+        if validate_user_is_staff(info.context.user):
+            return Challenge.objects.get(pk=kwargs.get('id'))
+        else:
+            validate_active_event()
+            return Challenge.objects.get(pk=kwargs.get('id'), hidden=False)
 
     def resolve_flag(self, info, **kwargs):
         validate_user_is_admin(info.context.user)
@@ -173,6 +179,7 @@ class SubmitFlag(graphene.Mutation):
 
     def mutate(self, info, challenge, flag):
         validate_user_is_authenticated(info.context.user)
+        validate_active_event()
         try:
             team = Profile.objects.get(user=info.context.user).team
         except:

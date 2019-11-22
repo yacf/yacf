@@ -3,18 +3,33 @@
     <b-navbar toggleable="md" type="dark" variant="dark">
       <b-navbar-toggle target="main_nav_collapse"></b-navbar-toggle>
 
-      <b-navbar-brand @click="$router.push({ name: 'Home'});" style="cursor: pointer;">{{settings.name}} {{this.$store.getters['user/brand']}}</b-navbar-brand>
+      <b-navbar-brand
+        @click="$router.push({ name: 'Home'});"
+        style="cursor: pointer;"
+      >{{settings.name}} {{this.$store.getters['user/brand']}}</b-navbar-brand>
 
       <b-collapse is-nav id="main_nav_collapse">
         <b-navbar-nav>
-          <b-nav-item v-if="auth" @click="$router.push({ name: 'Scoreboard'});">Scoreboard</b-nav-item>
-          <b-nav-item v-if="auth" @click="$router.push({ name: 'Challenges'});">Challenges</b-nav-item>
-          <b-nav-item v-for="page in pages" :key="page.id" @click="$router.push({ name: 'Page', params: { 'url': page.url }});">{{page.name}}</b-nav-item>
+          <template v-if="new Date() > new Date(settings.start)">
+            <b-nav-item v-if="auth" @click="$router.push({ name: 'Scoreboard'});">Scoreboard</b-nav-item>
+            <b-nav-item v-if="auth" @click="$router.push({ name: 'Challenges'});">Challenges</b-nav-item>
+          </template>
+          <b-nav-item
+            v-for="page in pages"
+            :key="page.id"
+            @click="$router.push({ name: 'Page', params: { 'url': page.url }});"
+          >{{page.name}}</b-nav-item>
         </b-navbar-nav>
 
         <b-navbar-nav class="ml-auto">
-          <b-nav-item v-if="superuser" @click="$router.push({ name: 'AdminMission'});">Admin Dashboard</b-nav-item>
-          <b-nav-item v-else @click="$router.push(`/team/${$store.getters['user/userteam']}`);">{{this.$store.getters['user/userteam']}}</b-nav-item>
+          <b-nav-item
+            v-if="superuser"
+            @click="$router.push({ name: 'AdminMission'});"
+          >Admin Dashboard</b-nav-item>
+          <b-nav-item
+            v-else
+            @click="$router.push(`/team/${$store.getters['user/userteam']}`);"
+          >{{this.$store.getters['user/userteam']}}</b-nav-item>
 
           <template v-if="auth">
             <b-nav-item-dropdown right>

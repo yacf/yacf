@@ -1,21 +1,42 @@
 <template>
   <div class="offset">
-    <h3>Add Challenge</h3>
-    <label>Challenge name:</label>
-    <input class="form-control" v-model="name" />
-    <label>Challenge Description (html enabled):</label>
-    <textarea class="form-control" v-model="description"></textarea>
-    <label>Challenge Points:</label>
-    <input class="form-control" v-model="points" />
-    <label>Challenge Flag:</label>
-    <input class="form-control" v-model="flag" />
-    <label>Challenge Category:</label>
-    <select class="form-control" v-model="category">
-      <option value="None" v-bind:default="true">None</option>
-      <option v-for="category in categories" v-bind:value="category.name" v-bind:key="category.id">{{category.name}}</option>
-    </select>
-    <p>{{message}}</p>
-    <button class="btn btn-secondary" @click="addChallenge()">Add Challenge</button>
+    <b-card header="New Challenge">
+      <h3>Add Challenge</h3>
+      <label>Challenge name:</label>
+      <input class="form-control" v-model="name" />
+      <label>Challenge Description (html enabled):</label>
+      <textarea class="form-control" rows="7" v-model="description"></textarea>
+      <label>Challenge Points:</label>
+      <input class="form-control" v-model="points" />
+      <label>Challenge Flag:</label>
+      <input class="form-control" v-model="flag" />
+      <label>Flag Hash:</label>
+      <select class="form-control" v-model="algo">
+        <option value="None" v-bind:default="true">None</option>
+        <option value="md5">MD5</option>
+        <option value="sha224">SHA224</option>
+        <option value="sha256">SHA356</option>
+      </select>
+      <label>Challenge Category:</label>
+      <select class="form-control" v-model="category">
+        <option value="None" v-bind:default="true">None</option>
+        <option
+          v-for="category in categories"
+          v-bind:value="category.name"
+          v-bind:key="category.id"
+        >{{category.name}}</option>
+      </select>
+      <b-form-checkbox
+        id="checkbox-1"
+        v-model="auth"
+        name="checkbox-1"
+        value="true"
+        unchecked-value="false"
+      >Hidden</b-form-checkbox>
+
+      <p>{{message}}</p>
+      <button class="btn btn-secondary" @click="addChallenge()">Add Challenge</button>
+    </b-card>
   </div>
 </template>
 

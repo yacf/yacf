@@ -60,7 +60,7 @@ export default new Router({
     },
     {
       path: "/admin",
-      component: () => import("@/containers/Admin"),
+      component: () => import("@/containers/Dev"),
       redirect: { name: "AdminMission" },
       name: "Admin",
       beforeEnter: superusergraud,
@@ -157,6 +157,12 @@ export default new Router({
         }
       ]
     },
+    // {
+    //   path: "/admindev",
+    //   name: "AdminDev",
+    //   beforeEnter: base,
+    //   component: () => import("@/containers/Dev")
+    // },
     {
       path: "/login",
       name: "Login",
