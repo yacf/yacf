@@ -35,17 +35,22 @@ class HintType(DjangoObjectType):
             return ''
 
 class Query(graphene.ObjectType):
-    challenges = graphene.List(ChallengeType)
+    challenges = graphene.List(ChallengeType, first=graphene.Int(), skip=graphene.Int())
     challenge = graphene.Field(ChallengeType, id=graphene.Int())
     flag = graphene.Field(FlagType, cid=graphene.Int())
 
     statistic = graphene.Field(ChallengeType, category=graphene.String(), points=graphene.Int())
     total_points = graphene.Int()
 
-    def resolve_challenges(self, info, **kwargs):
+    def resolve_challenges(self, info, first=None, skip=None, **kwargs):
         validate_user_is_authenticated(info.context.user)
         if validate_user_is_staff(info.context.user):
-            return Challenge.objects.all().order_by('points')
+            challenges = Challenge.objects.all().order_by('points')
+            if skip is not None : 
+                challenges = challenges[skip:]
+            if first is not None: 
+                challenges = challenges[:first]
+            return challenges
         else:
             validate_active_event()
             return Challenge.objects.filter(category__hidden=False, hidden=False).order_by('points')

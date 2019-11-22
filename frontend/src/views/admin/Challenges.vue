@@ -3,17 +3,16 @@
     <div v-if="loading">Yo, we loadin'. Hang tight</div>
     <div v-else>
       <div class="newOpt">
-        <button
-          class="btn btn-secondary"
-          @click="$router.push({ name: 'AdminChallengesCreate'});"
-        >New Challenge</button>
+        <button class="btn btn-secondary" @click="$router.push({ name: 'AdminChallengesCreate'});">New Challenge</button>
       </div>
       <b-card header="Challenges Listing">
         <table id="adminchallenge" class="table table-hover table-sm">
           <thead>
             <tr>
               <th>ID</th>
-              <th>Challenge</th>
+              <th>Category</th>
+              <th>Challenge Name</th>
+
               <th>Description</th>
               <th>Points</th>
               <th style="text-align: right;">Options</th>
@@ -22,19 +21,15 @@
           <tbody>
             <tr v-for="challenge in challenges" v-bind:key="challenge.id">
               <td>{{challenge.id}}</td>
+              <td>{{challenge.category.name}}</td>
               <td>{{challenge.name}}</td>
               <td>{{challenge.description}}</td>
               <td>{{challenge.points}}</td>
               <td>
                 <div>
                   <RemoveChallenge :challenge="challenge" />
-                  <router-link
-                    tag="button"
-                    class="btn btn-secondary btn-sm"
-                    style="float: right"
-                    :to="{ name: 'AdminChallengeEdit', params: { challenge: challenge } }"
-                  >Edit</router-link>
-                  <AdminViewFlag :cid="challenge.id" />
+                  <router-link tag="button" class="btn btn-secondary btn-sm" style="float: right" :to="{ name: 'AdminChallengeEdit', params: { challenge: challenge } }">Edit</router-link>
+                  <!-- <AdminViewFlag :cid="challenge.id" /> -->
                 </div>
               </td>
             </tr>

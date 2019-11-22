@@ -1,25 +1,31 @@
 <template>
   <div style="padding:20px">
-    <div v-if="challenge">
-      <h3>Edit Challenge</h3>
-      <label>Challenge name:</label>
-      <input class="form-control" v-model="challenge.name" />
-      <label>Challenge Description (html enabled):</label>
-      <textarea class="form-control" rows="10" v-model="challenge.description"></textarea>
-      <label>Challenge Points:</label>
-      <input class="form-control" v-model="challenge.points" />
-      <label>Challenge Flag:</label>
-      <input class="form-control" v-model="flag" />
-      <label>Challenge Category:</label>
-      <select class="form-control" v-model="challenge.category.name">
-        <option v-bind:default="challenge.category.name">{{challenge.category.name}}</option>
-        <option value="None">None</option>
-        <option v-for="category in categories" v-bind:value="category.name" v-bind:key="category.id">{{category.name}}</option>
-      </select>
-      <p>{{message}}</p>
-      <button class="btn btn-secondary" @click="update()">Update Challenge</button>
-    </div>
-    <div v-else>Redirect.. You cannot access this page directly</div>
+    <b-card header="Edit Challenge">
+      <b-tabs content-class="mt-3">
+        <b-tab title="Challenge" active>
+          <div v-if="challenge">
+            <label>Challenge name:</label>
+            <input class="form-control" v-model="challenge.name" />
+            <label>Challenge Description (html enabled):</label>
+            <textarea class="form-control" rows="10" v-model="challenge.description"></textarea>
+            <label>Challenge Points:</label>
+            <input class="form-control" v-model="challenge.points" />
+            <label>Challenge Flag:</label>
+            <input class="form-control" v-model="flag" />
+            <label>Challenge Category:</label>
+            <select class="form-control" v-model="challenge.category.name">
+              <option v-bind:default="challenge.category.name">{{challenge.category.name}}</option>
+              <option value="None">None</option>
+              <option v-for="category in categories" v-bind:value="category.name" v-bind:key="category.id">{{category.name}}</option>
+            </select>
+            <p>{{message}}</p>
+            <button class="btn btn-secondary" @click="update()">Update</button>
+          </div>
+          <div v-else>Redirect.. You cannot access this page directly</div>
+        </b-tab>
+        <b-tab title="Hints">Coming soon. Available in django admin</b-tab>
+      </b-tabs>
+    </b-card>
   </div>
 </template>
 

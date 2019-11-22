@@ -4,11 +4,7 @@
       <b-navbar-toggle target="main_nav_collapse"></b-navbar-toggle>
 
       <b-navbar-brand @click="$router.push({ name: 'Home'});" style="cursor: pointer;">
-        <img
-          src="https://github.com/yacf/docs/blob/master/_assets/images/logo-p.png?raw=true"
-          alt="YACF"
-          height="25"
-        />
+        <img src="https://github.com/yacf/docs/blob/master/_assets/images/logo-p.png?raw=true" alt="YACF" height="25" />
       </b-navbar-brand>
 
       <b-collapse is-nav id="main_nav_collapse">
@@ -16,10 +12,7 @@
 
         <b-navbar-nav class="ml-auto">
           <b-nav-item v-if="superuser" @click="$router.push({ name: 'Home'});">Home</b-nav-item>
-          <b-nav-item
-            v-else
-            @click="$router.push(`/team/${$store.getters['user/userteam']}`);"
-          >{{this.$store.getters['user/userteam']}}</b-nav-item>
+          <b-nav-item v-else @click="$router.push(`/team/${$store.getters['user/userteam']}`);">{{this.$store.getters['user/userteam']}}</b-nav-item>
 
           <template v-if="auth">
             <b-nav-item-dropdown right>
