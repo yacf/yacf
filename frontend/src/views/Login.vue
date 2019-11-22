@@ -41,10 +41,10 @@ export default {
     login() {
       let that = this;
       api(
-        `mutation { login(username:"${that.username}", password:"${that.password}") { id } }`
+        `mutation { login(username:"${that.username}", password:"${that.password}") { user { id, isSuperuser, username, firstName, lastName, profile{ team { name } } } } }`
       ).then(data => {
         if (data.login) {
-          that.$store.commit("user/SET_USER", data.login);
+          that.$store.commit("user/SET_USER", data.login.user);
           that.$router.push({ name: "Home" });
         } else {
           that.message = "Login incorrect";

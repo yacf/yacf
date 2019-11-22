@@ -12,6 +12,7 @@
               <th>ID</th>
               <th>Name</th>
               <th>URL</th>
+              <th>Authenticated</th>
               <th style="text-align: right;">Options</th>
             </tr>
           </thead>
@@ -20,6 +21,7 @@
               <td>{{page.id}}</td>
               <td>{{page.name}}</td>
               <td>{{page.url}}</td>
+              <td>{{page.authenticated}}</td>
               <td>
                 <div>
                   <RemovePage :page="page" />
@@ -50,7 +52,7 @@ export default {
   },
   created() {
     let self = this;
-    api("query { pages{ id name url } }").then(data => {
+    api("query { pages{ id name url authenticated } }").then(data => {
       self.pages = data.pages;
       self.loading = false;
     });

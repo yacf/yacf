@@ -171,39 +171,58 @@ class SubmitFlag(graphene.Mutation):
         challenge   = graphene.Int(required=True)
         flag        = graphene.String(required=True)
 
-
     def mutate(self, info, challenge, flag):
         validate_user_is_authenticated(info.context.user)
-
-        print("User:", info.context.user)
-        # print("Team:", info.context.user.profile.verified)
-        team = Profile.objects.get(user=info.context.user).team
-        print("Team:", team.name)
         try:
-            get_challenge = Challenge.objects.get(pk=challenge)
-            if get_challenge.flag.value == hashlib.md5(flag.encode('utf-8')).hexdigest():
-                if team:
-                    solve = SolvedChallenge(team=team, user=info.context.user, challenge=get_challenge)
-                    solve.save()                  
-                code = 1
-            else:
-                if team:
-                    fail = Failure(team=team, user=info.context.user, challenge=get_challenge)
-                    fail.save()
-                code = 0
+            team = Profile.objects.get(user=info.context.user).team
         except:
-            code = 9
+            raise Exception('You must be on a team to submit flags')
 
+        try:
+            challenge = Challenge.objects.get(pk=challenge)
+        except:
+            raise Exception('Challenge not found')
 
-        if code == 1:
-            try:
-                # Send signal to scoreboard
-                channel_layer = channels.layers.get_channel_layer()
-                async_to_sync(channel_layer.group_send)("scoreboard", {"type": "scoreboard.update", "team": team.name, "points": team.points, "added": get_challenge.points, "time": solve.timestamp.strftime("%I:%M:%S")} )
-            except:
-                pass
+        # Check if challenge has been solved by the team 
+        if team.solved.filter(challenge=challenge):
+            raise Exception('Challenge already solved!')
 
-        return SubmitFlag(code)
+        algorithm = challenge.flag.algorithm.value
+
+        solved = False
+        if algorithm == None:
+            if challenge.flag.value == flag:
+                solved = True
+        elif algorithm == 'md5':
+            if challenge.flag.value == hashlib.md5(flag.encode('utf-8')).hexdigest():
+                solved = True
+        elif algorithm == 'sha224':
+            if challenge.flag.value == hashlib.sha224(flag.encode('utf-8')).hexdigest():
+                solved = True
+        elif algorithm == 'sha256':
+            if challenge.flag.value == hashlib.sha256(flag.encode('utf-8')).hexdigest():
+                solved = True
+        else:
+            raise Exception('Error with flag algorithm')
+
+        if solved:
+            solve = SolvedChallenge(team=team, user=info.context.user, challenge=challenge)
+            solve.save()
+            code=1
+        else:
+            fail = Failure(team=team, user=info.context.user, challenge=challenge)
+            fail.save()
+            code=0
+
+        # if code == 1:
+        #     try:
+        #         # Send signal to scoreboard
+        #         channel_layer = channels.layers.get_channel_layer()
+        #         async_to_sync(channel_layer.group_send)("scoreboard", {"type": "scoreboard.update", "team": team.name, "points": team.points, "added": get_challenge.points, "time": solve.timestamp.strftime("%I:%M:%S")} )
+        #     except:
+        #         pass
+
+        return SubmitFlag(code=code)
 
 
 class Mutation(object):

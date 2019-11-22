@@ -58,6 +58,8 @@ const mutations = {
   SET_USER(state, user) {
     state.user = user;
     state.auth = true;
+    localStorage.user = JSON.stringify(user);
+    localStorage.auth = true;
   },
   DESTROY_USER(state) {
     state.user = "";

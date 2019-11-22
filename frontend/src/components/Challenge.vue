@@ -1,22 +1,42 @@
 <template>
   <div>
     <!-- Modal Component -->
-    <b-modal v-bind:id="chal.id" v-bind:title="chal.name" ok-title="Submit Flag" ok-variant="secondary" @shown="loaddata" @ok="handleOk">
+    <b-modal v-bind:id="chal.id" v-bind:title="chal.category.name + ' ' + chal.points" ok-variant="secondary" @shown="loaddata" ok-only>
       <div v-if="loading">Challenge details are loading, please hold!</div>
       <div v-else>
-        <span v-html="challenge.description"></span>
+        <div>
+          {{chal.name}}
+          <hr />
+          <b-tabs content-class="mt-3">
+            <b-tab title="Challenge" active>
+              <span v-html="challenge.description"></span>
+              <div v-if="enter">
+                <p>Congrats, you solved the challenge! On to the next one!</p>
+              </div>
+              <div v-else>
+                <b-input-group class="mt-3">
+                  <b-form-input v-model="flag" v-on:keyup.enter="handleOk" required placeholder="Enter Flag"></b-form-input>
+                  <b-input-group-append>
+                    <b-button variant="info" @click="handleOk">Submit</b-button>
+                  </b-input-group-append>
+                </b-input-group>
 
-        <div v-if="enter">
-          <p>Congrats, you solved the challenge! On to the next one!</p>
-        </div>
-        <div v-else>
-          <b-form-group id="flaggroup" label-for="chad.id" description="Flags are not case sensitive">
-            <b-form-input id="chad.id" type="text" required placeholder="Enter Flag" v-model="flag"></b-form-input>
-          </b-form-group>
-          <p>{{message}}</p>
+                <p>{{message}}</p>
+              </div>
+            </b-tab>
+            <b-tab v-if="challenge.hints.length !== 0" title="Hints">
+              <div v-for="hint in challenge.hints" :key="hint.id">
+                <h4>{{hint.title}}</h4>
+                <p>{{hint.description}}</p>
+                <hr />
+              </div>
+            </b-tab>
+            <b-tab title="Stats">
+              <p class="stats" @click="$router.push(`/challenge/${categoryInLowerCase}/${challenge.points}`);">View Stats</p>
+            </b-tab>
+          </b-tabs>
         </div>
       </div>
-      <p class="stats" @click="$router.push(`/challenge/${categoryInLowerCase}/${challenge.points}`);">View Stats</p>
     </b-modal>
   </div>
 </template>
@@ -62,7 +82,7 @@ export default {
     loaddata() {
       let that = this;
       api(
-        `query{ challenge(id:${this.chal.id}){ id, description, points, category { name } } }`
+        `query{ challenge(id:${this.chal.id}){ id, description, points, category { name } hints { id title description } } }`
       ).then(data => {
         that.challenge = data.challenge;
         that.loading = false;

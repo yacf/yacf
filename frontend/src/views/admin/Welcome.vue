@@ -9,6 +9,10 @@
             <MonacoEditor height="500" theme="vs" language="html" :options="options" @change="onChange" v-model="content"></MonacoEditor>
             <span>(html enabled)</span>
             <hr />
+            <div class="alert alert-warning" role="alert">
+              <h6 class="alert-heading">Warning</h6>
+              <p>The YACF landing page content is exposed publicly. No authentication is required for this.</p>
+            </div>
             <button class="btn btn-secondary" style="margin-top: 10px;" @click="addWelcome()">Submit</button>
           </b-tab>
           <b-tab title="Preview">

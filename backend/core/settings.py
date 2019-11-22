@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'index',
     'pages',
     'teams',
+    'settings',
     'categories',
     'challenges',
     'corsheaders', #DEV!

@@ -44,7 +44,7 @@ class Team(models.Model):
 
 class AccessCode(models.Model):
     team = models.OneToOneField(Team, on_delete=models.CASCADE, related_name='accesscode')
-    value = models.CharField(max_length=150)
+    value = models.CharField(max_length=150, unique=True)
 
     def __str__(self):
         return self.team.name

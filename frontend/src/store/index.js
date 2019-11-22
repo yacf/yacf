@@ -6,32 +6,32 @@ import teams from "./modules/teams";
 import challenge from "./modules/challenge";
 import theme from "./modules/theme";
 
-import { WebSocketBridge } from "django-channels";
+// import { WebSocketBridge } from "django-channels";
 
 import { api } from "@/utils/api.js";
 
-import createPersistedState from "vuex-persistedstate";
+// import createPersistedState from "vuex-persistedstate";
 
-const socket = new WebSocketBridge();
+// const socket = new WebSocketBridge();
 
 // socket.connect('ws://team/stream/');
 
 // socket.connect("ws://localhost:8000/team/stream/"); //DEV!
 
-const createWebSocketPlugin = function(socket) {
-  return store => {
-    socket.listen(function(action, stream) {
-      console.log(action);
-      switch (action.type) {
-        case 1:
-          store.commit("addPoints", action);
-          break;
-        default:
-          break;
-      }
-    });
-  };
-};
+// const createWebSocketPlugin = function(socket) {
+//   return store => {
+//     socket.listen(function(action, stream) {
+//       console.log(action);
+//       switch (action.type) {
+//         case 1:
+//           store.commit("addPoints", action);
+//           break;
+//         default:
+//           break;
+//       }
+//     });
+//   };
+// };
 
 // const plugin = createWebSocketPlugin(socket);
 
@@ -67,14 +67,18 @@ export default new Vuex.Store({
   },
   actions: {
     loadChallengeBoard({ commit }) {
-      api("query{ categories {id, challenges{ id, name, points }, name, description}, teamSovle{ challenge{ id } } }").then(data => {
+      api(
+        "query{ categories {id, challenges{ id, name, points }, name, description}, teamSovle{ challenge{ id } } }"
+      ).then(data => {
         commit("SET_BOARD", data.categories);
         commit("SET_SOLVES", data.teamSovle);
       });
     },
 
     loadNewChallengeBoard({ commit }) {
-      api("query{ challenges {id, name points category {name} } }").then(data => {
+      api(
+        "query{ challenges {id, name points category {name} hints {id} } }"
+      ).then(data => {
         commit("SET_NEW_BOARD", data.challenges);
         // commit("SET_SOLVES", data.teamSovle);
       });
@@ -133,7 +137,7 @@ export default new Vuex.Store({
         state.graphlabels.push(payload.time);
       }
     }
-  },
+  }
   // plugins: [plugin]
-  plugins: [createPersistedState()]
+  // plugins: [createPersistedState()]
 });

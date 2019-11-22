@@ -3,7 +3,7 @@
     <b-navbar toggleable="md" type="dark" variant="dark">
       <b-navbar-toggle target="main_nav_collapse"></b-navbar-toggle>
 
-      <b-navbar-brand @click="$router.push({ name: 'Home'});" style="cursor: pointer;">YACF {{this.$store.getters['user/brand']}}</b-navbar-brand>
+      <b-navbar-brand @click="$router.push({ name: 'Home'});" style="cursor: pointer;">{{settings.name}} {{this.$store.getters['user/brand']}}</b-navbar-brand>
 
       <b-collapse is-nav id="main_nav_collapse">
         <b-navbar-nav>
@@ -13,13 +13,13 @@
         </b-navbar-nav>
 
         <b-navbar-nav class="ml-auto">
-          <b-nav-item v-if="this.$store.getters['user/isAdmin']" @click="$router.push({ name: 'AdminMission'});">Admin Dashboard</b-nav-item>
+          <b-nav-item v-if="superuser" @click="$router.push({ name: 'AdminMission'});">Admin Dashboard</b-nav-item>
           <b-nav-item v-else @click="$router.push(`/team/${$store.getters['user/userteam']}`);">{{this.$store.getters['user/userteam']}}</b-nav-item>
 
           <template v-if="auth">
             <b-nav-item-dropdown right>
               <template slot="button-content">
-                <span>{{$store.getters['user/initials']}}</span>
+                <span>{{username}}</span>
               </template>
               <b-dropdown-item @click="$router.push(`/profile`);">Profile</b-dropdown-item>
               <b-dropdown-item @click="logout">Signout</b-dropdown-item>
@@ -53,24 +53,45 @@ export default {
   name: "DefaultContainer",
   data() {
     return {
-      pages: []
+      pages: [],
+      settings: {
+        name: "",
+        start: "",
+        end: ""
+      }
     };
   },
   computed: {
     ...mapGetters({
-      theme: "theme/GET_THEME",
-      auth: "user/auth"
-    })
+      theme: "theme/GET_THEME"
+    }),
+    auth() {
+      return localStorage.auth ? localStorage.auth : false;
+    },
+    username() {
+      return localStorage.user ? JSON.parse(localStorage.user).firstName : null;
+    },
+    superuser() {
+      return localStorage.user
+        ? JSON.parse(localStorage.user).isSuperuser
+        : false;
+    }
   },
   created() {
     let self = this;
     api("query { pages{ id url name } }").then(data => {
       self.pages = data.pages;
     });
+    api("query { event{ id name start end } }").then(data => {
+      self.settings.name = data.event.name;
+      self.settings.start = data.event.start;
+      self.settings.end = data.event.end;
+    });
   },
   methods: {
     logout() {
       console.log("At logout");
+      localStorage.clear();
       this.$store.dispatch("user/logout");
       this.$router.push("/login");
     }

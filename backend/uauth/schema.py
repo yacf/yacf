@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 
 from uauth.models import Profile
 from teams.models import Team
+from settings.models import Team as S_Team
 
 class Me(DjangoObjectType):
     class Meta:
@@ -17,11 +18,11 @@ class UserType(DjangoObjectType):
         model = User
         exclude_fields = ('password')
 
-    def resolve_is_superuser(self, info):
-        if validate_user_is_staff(info.context.user):
-            return self.is_superuser
-        else:
-            raise Exception('Not authorized to view superuser information')
+    # def resolve_is_superuser(self, info):
+    #     if validate_user_is_staff(info.context.user):
+    #         return self.is_superuser
+    #     else:
+    #         raise Exception('Not authorized to view superuser information')
 
     def resolve_is_staff(self, info):
         if validate_user_is_staff(info.context.user):
@@ -83,38 +84,39 @@ class AddUser(graphene.Mutation):
     # TODO: VALIDATION CHECK!!
     # TODO: TRY CATCH
     def mutate(self, info, username, email, password, firstname, lastname, accesscode):
-        validate_user_is_admin(info.context.user)
-        team = Team.objects.filter(accesscode=accesscode).first()
-        if team:
+        # validate_user_is_admin(info.context.user)
+        try:
+            team = Team.objects.get(accesscode=accesscode)
+        except:
+            raise Exception("Bad Access code")
+
+        if team.players.count() <= S_Team.objects.first().capacity:
             newUser = User.objects.create_user(username=username, first_name=firstname, last_name=lastname, email=email, password=password)
             newProfile = Profile(user=newUser, verified=False, team=team, hidden=False)
             newProfile.save()
-            code = 0
         else:
-            # Invaild access code
-            code = 1
+            raise Exception("Team is full")
 
         login(info.context, newUser)
 
-        return AddUser(code=code)
+        return AddUser(code=0)
 
 class LogIn(graphene.Mutation):
-    id = graphene.Int()
-    isAuthenticated = graphene.Int()
+    user = graphene.Field(UserType)
 
     class Arguments:
         username = graphene.String(required=True)
         password = graphene.String(required=True)
 
     def mutate(self, info, username, password):
-        user = authenticate(username=username, password=password)
+        userobj = authenticate(username=username, password=password)
 
-        if not user:
+        if not userobj:
             raise Exception('Invalid username or password')
 
-        login(info.context, user)
+        login(info.context, userobj)
 
-        return LogIn(id=user.id,)
+        return LogIn(user=userobj)
     
 class LogOut(graphene.Mutation):
     status = graphene.String()

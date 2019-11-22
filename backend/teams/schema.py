@@ -1,5 +1,6 @@
 import channels.layers
 from asgiref.sync import async_to_sync
+from django.db.models import Q
 
 import graphene
 from graphene_django import DjangoObjectType
@@ -34,18 +35,30 @@ class FailureType(DjangoObjectType):
         model = Failure
 
 class Query(graphene.ObjectType):
-    teams = graphene.List(TeamType)
+    teams = graphene.List(TeamType, first=graphene.Int(), skip=graphene.Int())
     solves = graphene.List(SolvedChallengeType)
     failures = graphene.List(FailureType)
 
     team_name = graphene.Field(TeamType, name=graphene.String())
     team = graphene.Field(TeamType)
 
+    searchteam = graphene.List(TeamType, query=graphene.String())
+
     team_sovle = graphene.List(SolvedChallengeType)
 
-    def resolve_teams(self, info, **kwargs):
+    def resolve_teams(self, info, first=None, skip=None, **kwargs):
         validate_user_is_authenticated(info.context.user)
-        return Team.objects.all()
+        if validate_user_is_staff(info.context.user):
+            teams = Team.objects.all()
+        else:
+            teams = Team.objects.filter(hidden=False)
+
+        if skip is not None : 
+            teams = teams[skip:]
+        if first is not None: 
+            teams = teams[:first]
+        
+        return teams
 
     def resolve_team_name(self, info, **kwargs):
         validate_user_is_authenticated(info.context.user)
@@ -62,6 +75,13 @@ class Query(graphene.ObjectType):
     def resolve_failures(self, info, **kwargs):
         validate_user_is_authenticated(info.context.user)
         return Failure.objects.all().order_by('-timestamp')
+
+    def resolve_searchteam(self, info, **kwargs):
+        validate_user_is_authenticated(info.context.user)
+        if validate_user_is_staff(info.context.user):
+            return Team.objects.filter(Q(name__contains=kwargs.get('query')) | Q(affiliation__contains=kwargs.get('query')) | Q(website__contains=kwargs.get('query')))
+        else:
+            return Team.objects.filter(hidden=False).filter(Q(name__contains=kwargs.get('query')) | Q(affiliation__contains=kwargs.get('query')) | Q(website__contains=kwargs.get('query')))           
 
     def resolve_team_sovle(self, info, **kwargs):
         validate_user_is_authenticated(info.context.user)
@@ -191,7 +211,7 @@ class Graph(graphene.Mutation):
 
         graph = []
         for team in teams:
-            graph.append({'label': team.name, 'data': [], 'backgroundColor': '', 'borderColor': '', 'fill': 'false'})
+            graph.append({'label': team.name, 'data': [0], 'backgroundColor': '', 'borderColor': '', 'fill': 'false'})
 
         colors = ['#FFD700', '#909497', '#A46628', '#3232CD', '#93C54B']
 
@@ -218,7 +238,7 @@ class Graph(graphene.Mutation):
 
 
         # Construct time for all solved challenges.
-        timeline = []
+        timeline = [0]
         for solve in solved:
             timeline.append(solve.timestamp.strftime("%I:%M:%S"))
 

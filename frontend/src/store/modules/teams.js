@@ -30,19 +30,33 @@ const getters = {
 
 const actions = {
   LoadTeamRank({ commit }) {
-    api("query{ team {id, name, points, correctFlags, wrongFlags } totalPoints }").then(data => {
+    api(
+      "query{ team {id, name, points, correctFlags, wrongFlags } totalPoints }"
+    ).then(data => {
       commit("SET_TEAM_RANK", data.team);
       commit("SET_MAX_POINTS", data.totalPoints);
     });
   },
   loadTeams({ commit }) {
-    api("query{ teams {id, name, affiliation, website, points, correctFlags, wrongFlags} totalPoints }").then(data => {
+    api(
+      `query{ teams(first:${25} skip:${0}) {id, name, affiliation, website, points, correctFlags, wrongFlags} totalPoints }`
+    ).then(data => {
       commit("SET_TEAMS", data.teams);
       commit("SET_MAX_POINTS", data.totalPoints);
     });
   },
+  searchTeams({ commit }, payload) {
+    api(
+      `query{ searchteam(query:"${payload}") { id, name, affiliation, website, points, correctFlags, wrongFlags} }`
+    ).then(data => {
+      commit("SET_TEAMS", data.searchteam);
+      commit("SET_MAX_POINTS", data.totalPoints);
+    });
+  },
   loadStats({ commit }, payload) {
-    api(`query{ teamName(name:"${payload}"){ id, name, points, players { user { username } }, solved{ id, timestamp, challenge { id, name, points, category{ name } } } } }`).then(data => {
+    api(
+      `query{ teamName(name:"${payload}"){ id, name, points, players { user { username } }, solved{ id, timestamp, challenge { id, name, points, category{ name } } } } }`
+    ).then(data => {
       commit("SET_TEAM", data.teamName);
     });
   }

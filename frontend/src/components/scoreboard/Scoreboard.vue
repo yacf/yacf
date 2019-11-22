@@ -1,6 +1,11 @@
 <template>
   <div style="padding-top:20px;">
-    <h3>Teams</h3>
+    <!-- <b-input-group class="mt-3">
+      <input v-model="search" v-on:keyup.enter="searchteam" />
+      <b-input-group-append>
+        <b-button variant="info" @click="searchteam">Search</b-button>
+      </b-input-group-append>
+    </b-input-group>-->
     <table id="socreboard" class="table table-hover table-sm">
       <thead>
         <tr>
@@ -35,10 +40,16 @@
 </template>
 
 <script>
+import { api } from "@/utils/api";
 import { mapGetters } from "vuex";
 
 export default {
   name: "Scoreboard",
+  data() {
+    return {
+      search: ""
+    };
+  },
   computed: {
     ...mapGetters({
       teams: "teams/ranks",
@@ -47,6 +58,12 @@ export default {
   },
   beforeMount() {
     this.$store.dispatch("teams/loadTeams");
+  },
+  methods: {
+    searchteam() {
+      console.log("SEARCH: ", this.search);
+      this.$store.dispatch("teams/searchTeams", this.search);
+    }
   }
 };
 </script>

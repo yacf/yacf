@@ -48,7 +48,7 @@ export default {
         `mutation {  adduser(username:"${this.username}", email:"${this.email}", password:"${this.password1}", firstname:"${this.firstname}", lastname:"${this.lastname}", accesscode:"${this.accesscode}") { code } }`
       ).then(data => {
         if (data.adduser.code === 0) {
-          self.$router.push({ name: "Home" });
+          self.$router.push({ name: "Challenges" });
         } else {
           self.message = "An error occured";
         }

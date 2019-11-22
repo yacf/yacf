@@ -1,7 +1,5 @@
 <template>
   <div style="padding-top:20px;">
-    <h3>Your Ranks</h3>
-    <hr />
     <table id="socreboard" class="table table-hover">
       <thead>
         <tr>

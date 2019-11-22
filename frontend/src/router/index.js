@@ -49,15 +49,21 @@ export default new Router({
           name: "Team",
           beforeEnter: graud,
           component: () => import("@/views/Team")
+        },
+        {
+          path: "/profile",
+          name: "Profile",
+          beforeEnter: graud,
+          component: () => import("@/views/Profile")
         }
       ]
     },
     {
-      path: "/newadminui",
+      path: "/admin",
       component: () => import("@/containers/Admin"),
-      redirect: { name: "Testi" },
-      name: "NewUI",
-      beforeEnter: graud,
+      redirect: { name: "AdminMission" },
+      name: "Admin",
+      beforeEnter: superusergraud,
       children: [
         {
           path: "/admin/mission",
