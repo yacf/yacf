@@ -2,7 +2,7 @@
   <div>
     <div class="top-section logo" :style="{backgroundColor: $store.state.theme.primary}">
       <div class="frame">
-        <img src="https://github.com/yacf/docs/blob/master/_assets/images/logo-p.png?raw=true" alt="YACF" />
+        <img :src="image" alt="YACF" height="200" />
       </div>
     </div>
 
@@ -25,11 +25,13 @@
 
 <script>
 import { api } from "@/utils/api";
+import image from "@/assets/logo-login.png";
 
 export default {
   name: "",
   data() {
     return {
+      image: image,
       username: "",
       password: "",
       message: ""
