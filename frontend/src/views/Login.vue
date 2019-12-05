@@ -2,13 +2,13 @@
   <div>
     <div class="top-section logo" :style="{backgroundColor: $store.state.theme.primary}">
       <div class="frame">
-        <img :src="image" alt="YACF" height="200" />
+        <img src="/static/img/logo-login.png" alt="YACF" height="200" />
       </div>
     </div>
 
     <div class="bottom-section text-center" :style="{backgroundColor: $store.state.theme.secondary}">
       <div class="form-signin">
-        <p>{{message}}</p>
+        <p style="color:white;">{{message}}</p>
         <input class="form-control" placeholder="Username" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" v-model="username" />
         <input type="password" class="form-control" placeholder="Password" v-model="password" v-on:keyup.enter="login()" />
 
@@ -25,13 +25,11 @@
 
 <script>
 import { api } from "@/utils/api";
-import image from "@/assets/logo-login.png";
 
 export default {
   name: "",
   data() {
     return {
-      image: image,
       username: "",
       password: "",
       message: ""

@@ -4,7 +4,7 @@
       <b-navbar-toggle target="main_nav_collapse"></b-navbar-toggle>
 
       <b-navbar-brand @click="$router.push({ name: 'Home'});" style="cursor: pointer;">
-        <img :src="image" alt="YACF" height="25" />
+        <img src="/static/img/logo.png" alt="YACF" height="25" />
       </b-navbar-brand>
 
       <b-collapse is-nav id="main_nav_collapse">
@@ -87,7 +87,6 @@
 <script>
 import { api } from "@/utils/api";
 import { mapGetters } from "vuex";
-import image from "@/assets/logo.png";
 
 import {
   faRocket,
@@ -108,7 +107,6 @@ export default {
   name: "DefaultContainer",
   data() {
     return {
-      image: image,
       pages: [],
       settings: {
         name: "",
