@@ -19,10 +19,10 @@ export default {
   },
   beforeMount() {
     let that = this;
-    api("mutation{ graph{ timeline, message } }").then(data => {
+    api("mutation{ graph{ timeline, message } }").then(response => {
       that.$store.commit("SET_GRAPH", {
-        data: JSON.parse(data.graph.message),
-        labels: JSON.parse(data.graph.timeline)
+        data: JSON.parse(response.data.graph.message),
+        labels: JSON.parse(response.data.graph.timeline)
       });
 
       that.graphloading = false;

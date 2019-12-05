@@ -3,7 +3,8 @@ import Vuex from "vuex";
 
 import user from "./modules/user";
 import teams from "./modules/teams";
-import challenge from "./modules/challenge";
+import categories from "./modules/categories";
+import challenges from "./modules/challenges";
 import theme from "./modules/theme";
 
 // import { WebSocketBridge } from "django-channels";
@@ -41,7 +42,8 @@ export default new Vuex.Store({
   modules: {
     user,
     teams,
-    challenge,
+    categories,
+    challenges,
     theme
   },
   state: {
@@ -69,17 +71,17 @@ export default new Vuex.Store({
     loadChallengeBoard({ commit }) {
       api(
         "query{ categories {id, challenges{ id, name, points }, name, description}, teamSovle{ challenge{ id } } }"
-      ).then(data => {
-        commit("SET_BOARD", data.categories);
-        commit("SET_SOLVES", data.teamSovle);
+      ).then(response => {
+        commit("SET_BOARD", response.data.categories);
+        commit("SET_SOLVES", response.data.teamSovle);
       });
     },
 
     loadNewChallengeBoard({ commit }) {
       api(
         "query{ challenges {id, name points category {name} hints {id} } }"
-      ).then(data => {
-        commit("SET_NEW_BOARD", data.challenges);
+      ).then(response => {
+        commit("SET_NEW_BOARD", response.data.challenges);
         // commit("SET_SOLVES", data.teamSovle);
       });
     },

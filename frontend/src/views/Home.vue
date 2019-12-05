@@ -14,8 +14,8 @@ export default {
   },
   beforeMount() {
     let that = this;
-    api("query{ welcomePage{ content } }").then(data => {
-      that.content = atob(data.welcomePage.content);
+    api("query{ welcomePage{ content } }").then(response => {
+      that.content = atob(response.data.welcomePage.content);
       that.loading = false;
     });
   }

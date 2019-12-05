@@ -42,4 +42,6 @@ RUN chown -R www-data:www-data /var/www/
 
 COPY scripts/apache/development.conf /etc/apache2/sites-available/000-default.conf
 
+ENV APPKEY $(openssl rand -hex 32)
+
 CMD apachectl -D FOREGROUND

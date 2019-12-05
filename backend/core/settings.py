@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'graphene_django',
-    'channels',
+    # 'channels',
     'django_filters',
     'uauth',
     'server',
@@ -94,14 +94,14 @@ ASGI_APPLICATION = "core.routing.application"
 
 redis_host = os.environ.get('REDIS_HOST', 'localhost')
 
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {
-            "hosts": [(redis_host, 6379)],
-        },
-    },
-}
+# CHANNEL_LAYERS = {
+#     "default": {
+#         "BACKEND": "channels_redis.core.RedisChannelLayer",
+#         "CONFIG": {
+#             "hosts": [(redis_host, 6379)],
+#         },
+#     },
+# }
 
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
@@ -149,8 +149,6 @@ USE_TZ = True
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
-    # os.path.join(BASE_DIR, "static/js"),
-    # os.path.join(BASE_DIR, "static/css"),
 ]
 
 

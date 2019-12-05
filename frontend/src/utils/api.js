@@ -10,6 +10,6 @@ export function api(query) {
       query: query
     }
   }).then(result => {
-    return result.data.data;
+    return result.data;
   });
 }

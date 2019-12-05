@@ -25,8 +25,8 @@ export default {
     get_page() {
       let self = this;
       api(`query{ page(url:"${this.$route.params.url}"){ id content } }`).then(
-        data => {
-          self.content = data.page.content;
+        response => {
+          self.content = response.data.page.content;
         }
       );
     }

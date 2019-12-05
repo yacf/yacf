@@ -58,8 +58,8 @@ export default {
         `mutation{ welcome(content:"${btoa(
           unescape(encodeURIComponent(this.content))
         )}"){ status } }`
-      ).then(data => {
-        self.status = data.welcome.status;
+      ).then(response => {
+        self.status = response.data.welcome.status;
       });
     }
   }

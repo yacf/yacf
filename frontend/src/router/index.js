@@ -60,7 +60,7 @@ export default new Router({
     },
     {
       path: "/admin",
-      component: () => import("@/containers/Dev"),
+      component: () => import("@/containers/Admin"),
       redirect: { name: "AdminMission" },
       name: "Admin",
       beforeEnter: superusergraud,
@@ -78,39 +78,49 @@ export default new Router({
         {
           path: "/admin/categories",
           name: "AdminCategories",
-          component: () => import("@/views/admin/Categories")
+          component: () => import("@/views/admin/categories/Categories")
         },
         {
-          path: "/admin/category/edit",
+          path: "/admin/category/create",
+          name: "AdminCategoriesCreate",
+          component: () => import("@/views/admin/categories/Create")
+        },
+        {
+          path: "/admin/category/update",
           name: "AdminCategoryEdit",
-          component: () => import("@/views/admin/Edit/Category"),
+          component: () => import("@/views/admin/categories/Update"),
           props: true
         },
         {
           path: "/admin/challenges",
           name: "AdminChallenges",
-          component: () => import("@/views/admin/Challenges")
+          component: () => import("@/views/admin/challenges/Challenges")
         },
         {
           path: "/admin/challenge/create",
           name: "AdminChallengesCreate",
-          component: () => import("@/views/admin/Create/Challenge")
+          component: () => import("@/views/admin/challenges/Create")
         },
         {
-          path: "/admin/challenge/edit",
+          path: "/admin/challenge/update",
           name: "AdminChallengeEdit",
-          component: () => import("@/views/admin/Edit/Challenge"),
+          component: () => import("@/views/admin/challenges/Update"),
           props: true
         },
         {
           path: "/admin/teams",
           name: "AdminTeams",
-          component: () => import("@/views/admin/Teams")
+          component: () => import("@/views/admin/teams/Teams")
         },
         {
-          path: "/admin/team/edit",
+          path: "/admin/teams/create",
+          name: "AdminTeamsCreate",
+          component: () => import("@/views/admin/teams/Create")
+        },
+        {
+          path: "/admin/team/update",
           name: "AdminTeamEdit",
-          component: () => import("@/views/admin/Edit/Team"),
+          component: () => import("@/views/admin/teams/Update"),
           props: true
         },
         {
@@ -174,6 +184,12 @@ export default new Router({
       name: "RegisterUser",
       beforeEnter: base,
       component: () => import("@/views/Register/User")
+    },
+    {
+      path: "/admin/register",
+      name: "RegisterAdmin",
+      beforeEnter: base,
+      component: () => import("@/views/admin/register/Admin")
     },
     {
       path: "/register/team",

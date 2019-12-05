@@ -11,9 +11,9 @@ export function graud(to, from, next) {
   // store.dispatch("theme/GET_THEME");
   api(
     "query{ me { id, isSuperuser, username, firstName, lastName, profile{ team { name } } } }"
-  ).then(data => {
-    if (data.me !== null) {
-      store.commit("user/SET_USER", data.me);
+  ).then(response => {
+    if (response.data.me !== null) {
+      store.commit("user/SET_USER", response.data.me);
       next();
     } else {
       console.log("[ROUTE]: Authenication failed, going to login");
@@ -25,10 +25,10 @@ export function graud(to, from, next) {
 export function superusergraud(to, from, next) {
   api(
     "query{ me { id, isSuperuser, username, firstName, lastName, profile{ team { name } } } }"
-  ).then(data => {
-    if (data.me !== null) {
-      store.commit("user/SET_USER", data.me);
-      data.me.isSuperuser ? next() : next("/");
+  ).then(response => {
+    if (response.data.me !== null) {
+      store.commit("user/SET_USER", response.data.me);
+      response.data.me.isSuperuser ? next() : next("/");
       next();
     } else {
       console.log("[ROUTE]: Authenication failed, going to login");

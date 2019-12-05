@@ -13,8 +13,8 @@ const getters = {
 const actions = {
   GET_THEME({ commit }) {
     console.log("Gettin Server Setting!");
-    api("query { theme { name primary secondary accent } }").then(data => {
-      commit("SET_THEME", data.theme);
+    api("query { theme { name primary secondary accent } }").then(response => {
+      commit("SET_THEME", response.data.theme);
     });
   }
 };

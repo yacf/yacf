@@ -33,19 +33,21 @@ export default {
   },
   methods: {
     renderLineChart: function() {
-      console.log("Graphing: ", this.$props.name);
       let that = this;
       api(
         `mutation{ teamgraph(name:"${this.$props.name}"){ timeline, message } }`
-      ).then(data => {
+      ).then(response => {
         that.renderChart(
           {
-            labels: JSON.parse(data.teamgraph.timeline),
-            datasets: JSON.parse(data.teamgraph.message)
+            labels: JSON.parse(response.data.teamgraph.timeline),
+            datasets: JSON.parse(response.data.teamgraph.message)
           },
           { responsive: true, maintainAspectRatio: false }
         );
-        console.log(data.teamgraph.timeline, data.teamgraph.message);
+        console.log(
+          response.data.teamgraph.timeline,
+          response.data.teamgraph.message
+        );
       });
     }
   }

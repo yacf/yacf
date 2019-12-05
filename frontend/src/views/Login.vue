@@ -8,8 +8,6 @@
 
     <div class="bottom-section text-center" :style="{backgroundColor: $store.state.theme.secondary}">
       <div class="form-signin">
-        <h3>CTF Login</h3>
-
         <p>{{message}}</p>
         <input class="form-control" placeholder="Username" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" v-model="username" />
         <input type="password" class="form-control" placeholder="Password" v-model="password" v-on:keyup.enter="login()" />
@@ -42,9 +40,9 @@ export default {
       let that = this;
       api(
         `mutation { login(username:"${that.username}", password:"${that.password}") { user { id, isSuperuser, username, firstName, lastName, profile{ team { name } } } } }`
-      ).then(data => {
-        if (data.login) {
-          that.$store.commit("user/SET_USER", data.login.user);
+      ).then(response => {
+        if (response.data.login) {
+          that.$store.commit("user/SET_USER", response.data.login.user);
           that.$router.push({ name: "Home" });
         } else {
           that.message = "Login incorrect";
@@ -56,64 +54,6 @@ export default {
 </script>
 
 <style scoped>
-.top-section {
-  height: 40vh;
-  border-bottom: 1px solid black;
-  background-color: #181b1f;
-}
-.bottom-section {
-  height: 60vh;
-  background-color: #1e2125;
-}
-.frame {
-  padding: 35px;
-}
-.logo img {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.text-center {
-  display: -ms-flexbox;
-  display: -webkit-box;
-  display: flex;
-  -ms-flex-align: center;
-  -ms-flex-pack: center;
-  -webkit-box-align: center;
-  align-items: center;
-  -webkit-box-pack: center;
-  justify-content: center;
-  padding-top: 10px;
-  padding-bottom: 40px;
-}
-
-.form-signin {
-  width: 100%;
-  max-width: 330px;
-  padding: 15px;
-  /* margin: 0 auto; */
-}
-.form-signin .checkbox {
-  font-weight: 400;
-}
-.form-signin .form-control {
-  position: relative;
-  box-sizing: border-box;
-  height: auto;
-  padding: 10px;
-  font-size: 16px;
-}
-.form-signin .form-control:focus {
-  z-index: 2;
-}
-.form-signin input[type="email"] {
-  margin-bottom: -1px;
-}
-.form-signin input[type="password"] {
-  margin-bottom: 10px;
-}
-
 h3 {
   color: white;
 }

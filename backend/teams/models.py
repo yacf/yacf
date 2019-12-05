@@ -58,7 +58,7 @@ class SolvedChallenge(models.Model):
     """
     team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='solved')
 
-    user = models.ForeignKey(User, default=None, null=True, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, default=None, null=True, on_delete=models.CASCADE, related_name="solves")
     challenge = models.ForeignKey(Challenge, default=None, null=True, on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now_add=True)
 

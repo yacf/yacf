@@ -57,8 +57,8 @@ export default {
     let self = this;
     api(
       "query { users{ id username firstName lastName email isSuperuser profile { team { name } } } }"
-    ).then(data => {
-      self.users = data.users;
+    ).then(response => {
+      self.users = response.data.users;
       self.loading = false;
     });
   },

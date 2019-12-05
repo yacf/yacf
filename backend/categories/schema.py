@@ -33,10 +33,8 @@ class AddCategory(graphene.Mutation):
 
     def mutate(self, info, name, description):
         validate_user_is_admin(info.context.user)
-        try:
-            Category(name=name, description=description).save()
-        except:
-            raise Exception('Failed to add category')
+
+        Category(name=name, description=description).save()
 
         return AddCategory(code=0)
 
@@ -58,7 +56,7 @@ class RemoveCategory(graphene.Mutation):
         return RemoveCategory(message)
 
 class UpdateCategory(graphene.Mutation):
-    message = graphene.String()
+    code = graphene.Int()
 
     class Arguments:
         id          = graphene.Int(required=True)
@@ -67,16 +65,13 @@ class UpdateCategory(graphene.Mutation):
 
     def mutate(self, info, id, name, description):
         validate_user_is_admin(info.context.user)
-        try:
-            category = Category.objects.get(pk=id)
-            category.name = name
-            category.description = description
-            category.save()
-            message = "success"
-        except:
-            message = "failure"
+        
+        category = Category.objects.get(pk=id)
+        category.name = name
+        category.description = description
+        category.save()
 
-        return UpdateCategory(message)
+        return UpdateCategory(code=0)
 
 class Mutation(object):
     addcategory = AddCategory.Field()

@@ -21,11 +21,17 @@
     </b-card>
     <hr />
     <b-card-group deck>
-      <b-card header="Solves">
-        <b-alert variant="success" v-for="solve in solves" :key="solve.id" show>({{solve.id}}) {{solve.team.name}} - {{solve.challenge.name}} - {{solve.timestamp}}</b-alert>
+      <b-card header="Last 10 Solves">
+        <b-alert variant="success" v-for="solve in solves" :key="solve.id" show>
+          ({{solve.id}}) {{solve.team.name}} - {{solve.challenge.name}}
+          <span style="text-align: right; float: right">{{solve.timestamp | moment("MMMM Do YYYY, h:mm:ss a") }}</span>
+        </b-alert>
       </b-card>
-      <b-card header="Failures">
-        <b-alert variant="danger" v-for="failure in failures" :key="failure.id" show>({{failure.id}}) {{failure.team.name}} - {{failure.challenge.name}} - {{failure.timestamp}}</b-alert>
+      <b-card header="Last 10 Failures">
+        <b-alert variant="danger" v-for="failure in failures" :key="failure.id" show>
+          ({{failure.id}}) {{failure.team.name}} - {{failure.challenge.name}}
+          <span style="text-align: right; float: right">{{failure.timestamp | moment("MMMM Do YYYY, h:mm:ss a") }}</span>
+        </b-alert>
       </b-card>
     </b-card-group>
   </div>
@@ -51,24 +57,24 @@ export default {
   },
   created() {
     let self = this;
-    api("query { challenges{ id } }").then(data => {
-      self.challenges = data.challenges.length;
+    api("query { challenges{ id } }").then(response => {
+      self.challenges = response.data.challenges.length;
     });
-    api("query { teams{ id } }").then(data => {
-      self.teams = data.teams.length;
+    api("query { teams{ id } }").then(response => {
+      self.teams = response.data.teams.length;
     });
-    api("query { users{ id } }").then(data => {
-      self.users = data.users.length;
-    });
-    api(
-      "query { solves { id team { name } challenge { name } timestamp } }"
-    ).then(data => {
-      self.solves = data.solves;
+    api("query { users{ id } }").then(response => {
+      self.users = response.data.users.length;
     });
     api(
-      "query { failures { id team { name } challenge { name } timestamp } }"
-    ).then(data => {
-      self.failures = data.failures;
+      "query { solves(first:10, skip:0) { id team { name } challenge { name } timestamp } }"
+    ).then(response => {
+      self.solves = response.data.solves;
+    });
+    api(
+      "query { failures(first:10, skip:0) { id team { name } challenge { name } timestamp } }"
+    ).then(response => {
+      self.failures = response.data.failures;
     });
   },
   methods: {}

@@ -16,3 +16,7 @@ docker run -d -p80:80 -p443:443 -h play.nullify.uno --volume /home/ubuntu/ssl:/e
 ```
 certbot -d *.*.com --manual --preferred-challenges dns certonly
 ```
+
+```
+docker exec -i -t <> /bin/bash
+```

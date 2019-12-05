@@ -52,8 +52,8 @@ export default {
   },
   created() {
     let self = this;
-    api("query { pages{ id name url authenticated } }").then(data => {
-      self.pages = data.pages;
+    api("query { pages{ id name url authenticated } }").then(response => {
+      self.pages = response.data.pages;
       self.loading = false;
     });
   }

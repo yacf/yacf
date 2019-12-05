@@ -1,12 +1,14 @@
 import graphene
 from graphene_django import DjangoObjectType
-from uauth.validators import validate_user_is_authenticated, validate_user_is_admin, validate_user_is_staff
+from uauth.validators import validate_user_is_authenticated, validate_user_is_admin, validate_user_is_staff, validate_password
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 
-from uauth.models import Profile
+from uauth.models import AdminRegisterKey, Profile
 from teams.models import Team
 from settings.models import Team as S_Team
+
+from django.utils import timezone
 
 class Me(DjangoObjectType):
     class Meta:
@@ -70,6 +72,65 @@ class Query(object):
 
 # ------------------- MUTATIONS -------------------
 
+class ValidateRegisterKey(graphene.Mutation):
+    code = graphene.Int()
+
+    class Arguments:
+        key  = graphene.String(required=True)
+
+    def mutate(self, info, key):
+        try:
+            registerkey = AdminRegisterKey.objects.get(key=key)
+        except:
+            raise Exception("Key does not exist")
+
+        if registerkey.expiration < timezone.now():
+            raise Exception("Expired Key")
+        elif not registerkey.active:
+            raise Exception("Access key is not active. Contact administrator.")         
+
+        return ValidateRegisterKey(code=0)
+
+class CreateAdmin(graphene.Mutation):
+    code = graphene.Int()
+
+    class Arguments:
+        username = graphene.String(required=True)
+        password = graphene.String(required=True)
+        firstname = graphene.String(required=True)
+        lastname  = graphene.String(required=True)
+
+        key  = graphene.String(required=True)
+
+    def mutate(self, info, username, password, firstname, lastname, key):
+        try:
+            registerkey = AdminRegisterKey.objects.get(key=key)
+        except:
+            raise Exception("Key does not exist")
+
+        if registerkey.expiration < timezone.now():
+            raise Exception("Expired Key")
+        elif not registerkey.active:
+            raise Exception("Not active access key")          
+
+        if User.objects.filter(username=username).first():
+            raise Exception("Username taken")
+
+        validate_password(password)
+
+        user = User.objects.create_superuser(username=username, password=password, first_name=firstname, last_name=lastname, email="")
+        user.save()
+
+        profile = Profile(user=user, verified=True, hidden=True)
+        profile.save()
+
+        registerkey.active = False
+        registerkey.save()
+
+        login(info.context, user)
+
+        return CreateAdmin(code=0)
+
 class AddUser(graphene.Mutation):
     code = graphene.Int()
 
@@ -85,6 +146,8 @@ class AddUser(graphene.Mutation):
     # TODO: TRY CATCH
     def mutate(self, info, username, email, password, firstname, lastname, accesscode):
         # validate_user_is_admin(info.context.user)
+        validate_password(password)
+
         try:
             team = Team.objects.get(accesscode=accesscode)
         except:
@@ -126,6 +189,8 @@ class LogOut(graphene.Mutation):
         return LogOut(status='Logged Out')
 
 class Mutation(object):
+    validateregisterkey = ValidateRegisterKey.Field()
+    createadmin = CreateAdmin.Field()
     adduser = AddUser.Field()
     login   = LogIn.Field()
     logout  = LogOut.Field()

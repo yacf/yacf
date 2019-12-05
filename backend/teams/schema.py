@@ -9,7 +9,8 @@ from uauth.models import Profile
 
 import string, random, json
 
-from teams.models import Team, SolvedChallenge, Failure
+from settings.models import Event
+from teams.models import Team, AccessCode, SolvedChallenge, Failure
 
 class TeamType(DjangoObjectType):
     points = graphene.Int()
@@ -34,10 +35,20 @@ class FailureType(DjangoObjectType):
     class Meta:
         model = Failure
 
+class AccessCodeType(DjangoObjectType):
+    class Meta:
+        model = AccessCode
+
+    def resolve_value(self, info):
+        if validate_user_is_staff(info.context.user):
+            return self.value
+        else:
+            raise Exception('Not authorized to view accesscode information for teams')
+
 class Query(graphene.ObjectType):
     teams = graphene.List(TeamType, first=graphene.Int(), skip=graphene.Int())
-    solves = graphene.List(SolvedChallengeType)
-    failures = graphene.List(FailureType)
+    solves = graphene.List(SolvedChallengeType, first=graphene.Int(), skip=graphene.Int())
+    failures = graphene.List(FailureType, first=graphene.Int(), skip=graphene.Int())
 
     team_name = graphene.Field(TeamType, name=graphene.String())
     team = graphene.Field(TeamType)
@@ -51,7 +62,11 @@ class Query(graphene.ObjectType):
         if validate_user_is_staff(info.context.user):
             teams = Team.objects.all()
         else:
-            teams = Team.objects.filter(hidden=False)
+            if Event.objects.first() and Event.objects.first().private is True:
+                raise Exception("This event is being run in privacy mode. You are not allowed to query all teams.")
+            else:
+                teams = Team.objects.filter(hidden=False)
+
 
         if skip is not None : 
             teams = teams[skip:]
@@ -62,25 +77,65 @@ class Query(graphene.ObjectType):
 
     def resolve_team_name(self, info, **kwargs):
         validate_user_is_authenticated(info.context.user)
-        return Team.objects.get(name__iexact=kwargs.get('name'))
+
+        if validate_user_is_staff(info.context.user):
+            return Team.objects.get(name__iexact=kwargs.get('name'))
+        else:
+            if Event.objects.first() and Event.objects.first().private is True:
+                team = Team.objects.get(name__iexact=kwargs.get('name'))
+                if info.context.user.profile.team == team:
+                    return team
+                else:
+                    raise Exception("This event is being run in privacy mode. You are not allowed to query teams. If you are querying for your team please use the team query")
+            else:
+                return Team.objects.get(name__iexact=kwargs.get('name'))
 
     def resolve_team(self, info, **kwargs):
         validate_user_is_authenticated(info.context.user)
         return info.context.user.profile.team
     
-    def resolve_solves(self, info, **kwargs):
+    def resolve_solves(self, info, first=None, skip=None, **kwargs):
         validate_user_is_authenticated(info.context.user)
-        return SolvedChallenge.objects.all().order_by('-timestamp')
-    
-    def resolve_failures(self, info, **kwargs):
+        if validate_user_is_staff(info.context.user):
+            solves = SolvedChallenge.objects.all().order_by('-timestamp')
+        else:
+            if Event.objects.first() and Event.objects.first().private is True:
+                raise Exception("This event is being run in privacy mode. You are not allowed to query solves. If you want to query your team solves please use the teamsolves query.")
+            else:
+                solves = SolvedChallenge.objects.all().order_by('-timestamp')
+
+        if skip is not None : 
+            solves = solves[skip:]
+        if first is not None: 
+            solves = solves[:first]
+
+        return solves
+
+    def resolve_failures(self, info, first=None, skip=None, **kwargs):
         validate_user_is_authenticated(info.context.user)
-        return Failure.objects.all().order_by('-timestamp')
+        if validate_user_is_staff(info.context.user):
+            failures = Failure.objects.all().order_by('-timestamp')
+        else:
+            if Event.objects.first() and Event.objects.first().private is True:
+                raise Exception("This event is being run in privacy mode. You are not allowed to query failures.")
+            else:
+                failures = Failure.objects.all().order_by('-timestamp')
+        
+        if skip is not None : 
+            failures = failures[skip:]
+        if first is not None: 
+            failures = failures[:first]
+
+        return failures
 
     def resolve_searchteam(self, info, **kwargs):
         validate_user_is_authenticated(info.context.user)
         if validate_user_is_staff(info.context.user):
             return Team.objects.filter(Q(name__contains=kwargs.get('query')) | Q(affiliation__contains=kwargs.get('query')) | Q(website__contains=kwargs.get('query')))
         else:
+            if Event.objects.first() and Event.objects.first().private is True:
+                raise Exception("This event is being run in privacy mode. You are not allowed to search teams.")
+
             return Team.objects.filter(hidden=False).filter(Q(name__contains=kwargs.get('query')) | Q(affiliation__contains=kwargs.get('query')) | Q(website__contains=kwargs.get('query')))           
 
     def resolve_team_sovle(self, info, **kwargs):
@@ -103,17 +158,20 @@ class AddTeam(graphene.Mutation):
     # TODO: VALIDATION CHECK!!
     def mutate(self, info, name, email, affiliation, accesscode=None):
         validate_user_is_admin(info.context.user)
-        try:
-            newTeam = Team(name=name, email=email, affiliation=affiliation, accesscode=''.join(random.choices(string.ascii_uppercase + string.digits, k=10)))
-            newTeam.save()
-            code = 0
-        except:
-            code = 1
 
-        return AddTeam(code=code)
+        
+        team = Team(name=name, email=email, affiliation=affiliation)
+        team.save()
+
+        if accesscode:
+            AccessCode(team=team, value=accesscode).save()
+        else:
+            AccessCode(team=team, value=''.join(random.choices(string.ascii_uppercase + string.digits, k=10))).save()
+
+        return AddTeam(code=0)
 
 class UpdateTeam(graphene.Mutation):
-    message = graphene.String()
+    code = graphene.Int()
 
     class Arguments:
         id          = graphene.Int(required=True)
@@ -137,11 +195,11 @@ class UpdateTeam(graphene.Mutation):
             team.accesscode.value = accesscode
             team.save()
 
-            message = "success"
+            code = 0
         except:
-            message = "failure"
+            code = 1
 
-        return UpdateTeam(message)
+        return UpdateTeam(code)
 
 class RemoveTeam(graphene.Mutation):
     code = graphene.Int()
@@ -202,6 +260,10 @@ class Graph(graphene.Mutation):
 
     def mutate(self, info, number=10):
         validate_user_is_authenticated(info.context.user)
+
+        if not validate_user_is_staff(info.context.user):
+            if Event.objects.first() and Event.objects.first().private is True:
+                    raise Exception("This event is being run in privacy mode. You are not allowed to query teams.")
 
         # Sort to get the top 5 by point value
         teams = sorted(list(Team.objects.all()), key=lambda x: x.points, reverse=True)[:5]

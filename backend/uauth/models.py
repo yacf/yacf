@@ -2,6 +2,13 @@ from django.db import models
 from django.contrib.auth.models import User
 from teams.models import Team
 
+class AdminRegisterKey(models.Model):
+    key = models.CharField(max_length=32)
+
+    singleuse  = models.BooleanField()
+    expiration = models.DateTimeField()
+    active = models.BooleanField(default=True)
+
 class Profile(models.Model):
     user = models.OneToOneField(User, related_name='profile', on_delete=models.CASCADE)
     verified = models.BooleanField(default=False)

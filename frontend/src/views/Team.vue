@@ -1,9 +1,10 @@
 <template>
   <div style="padding: 15px;">
     <h3 style="padding-top: 10px;">{{this.$store.state.teams.team.name}}</h3>
-    <hr />
-    <graph :name="this.$route.params.name" />
+
     <b-container class="bv-example-row">
+      <graph :name="this.$route.params.name" />
+      <hr />
       <b-row>
         <b-col>
           <table id="team" class="table table-hover">
@@ -16,8 +17,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(solve, index) in this.$store.getters['teams/GET_TEAM_SOLVE']" :key="solve.id" style="cursor: pointer;" @click="$router.push(`/challenge/${solve.challenge.category.name}/${solve.challenge.points}`);">
-                <!-- <td>{{index+1}}</td> -->
+              <tr v-for="solve in team.data.solved" :key="solve.id" style="cursor: pointer;" @click="$router.push(`/challenge/${solve.challenge.category.name}/${solve.challenge.points}`);">
                 <td>{{solve.challenge.name}}</td>
                 <td>{{solve.challenge.points}}</td>
                 <td>{{solve.timestamp | moment("dd, MM Do YYYY, h:mm:ss a") }}</td>
@@ -30,14 +30,16 @@
             <thead>
               <tr>
                 <!-- <th>Order</th> -->
-                <th>Member</th>
+                <th>Handle</th>
+                <th>Name</th>
                 <th>Points</th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="player in this.$store.state.teams.team.players" :key="player.id">
+              <tr v-for="player in team.data.players" :key="player.id">
                 <td>{{player.user.username}}</td>
-                <td>N/A</td>
+                <td>{{player.user.firstName}}</td>
+                <td>{{points(player.user.solves)}}</td>
               </tr>
             </tbody>
           </table>
@@ -48,6 +50,8 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+
 export default {
   name: "team",
   beforeMount() {
@@ -55,6 +59,18 @@ export default {
   },
   components: {
     Graph: () => import("@/components/team/Graph")
+  },
+  computed: {
+    ...mapGetters({
+      team: "teams/GET_TEAM"
+    })
+  },
+  methods: {
+    points(challenges) {
+      let total = 0;
+      challenges.forEach(element => (total = total + element.challenge.points));
+      return total;
+    }
   }
 };
 </script>

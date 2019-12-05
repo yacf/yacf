@@ -46,8 +46,8 @@ export default {
     let self = this;
     api(
       "query { categories{ name challenges{ solvedchallengeSet{ id } failureSet { id } } } }"
-    ).then(data => {
-      data.categories.forEach(function(element) {
+    ).then(response => {
+      response.data.categories.forEach(function(element) {
         self.chartdata.labels.push(element.name);
 
         var solves = 0;
