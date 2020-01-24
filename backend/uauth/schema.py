@@ -5,7 +5,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 
 from uauth.models import AdminRegisterKey, Profile
-from teams.models import Team
+from logs.models import LoginTracker
+from teams.models import Team, AccessCode
 from settings.models import Team as S_Team
 
 from django.utils import timezone
@@ -54,10 +55,16 @@ class ProfileType(DjangoObjectType):
     class Meta:
         model = Profile
 
+class LoginTrackerType(DjangoObjectType):
+    class Meta:
+        model = LoginTracker
+
 class Query(object):
     users = graphene.List(UserType)
     me = graphene.Field(Me)
     profile = graphene.Field(ProfileType)
+
+    login_tracker = graphene.List(LoginTrackerType)
 
     def resolve_users(self, info):
         validate_user_is_admin(info.context.user)
@@ -69,6 +76,10 @@ class Query(object):
     def resolve_me(self, info):
         validate_user_is_authenticated(info.context.user)
         return info.context.user
+
+    def resolve_login_tracker(self, info):
+        validate_user_is_admin(info.context.user)
+        return LoginTracker.objects.all()
 
 # ------------------- MUTATIONS -------------------
 
@@ -149,7 +160,7 @@ class AddUser(graphene.Mutation):
         validate_password(password)
 
         try:
-            team = Team.objects.get(accesscode=accesscode)
+            team = AccessCode.objects.get(value=accesscode).team
         except:
             raise Exception("Bad Access code")
 
@@ -176,6 +187,13 @@ class LogIn(graphene.Mutation):
 
         if not userobj:
             raise Exception('Invalid username or password')
+
+        print(info.context.META.get('HTTP_X_FORWARDED_FOR'), info.context.META.get('HTTP_X_REAL_IP'), info.context.META.get('HTTP_USER_AGENT'))
+        try:
+            logintracker = LoginTracker(user=userobj, address=info.context.META.get('HTTP_X_FORWARDED_FOR'), agent=info.context.META.get('HTTP_USER_AGENT'))
+            logintracker.save()
+        except:
+            pass
 
         login(info.context, userobj)
 

@@ -2,7 +2,7 @@
   <div>
     <div class="top-section logo" :style="{backgroundColor: $store.state.theme.primary}">
       <div class="frame">
-        <img src="/static/img/logo-login.png" alt="YACF" height="200" />
+        <img :src="require('@/assets/img/logo-login.png')" alt="YACF" height="200" />
       </div>
     </div>
 

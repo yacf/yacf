@@ -164,6 +164,11 @@ export default new Router({
           path: "/admin/settings",
           name: "AdminSettings",
           component: () => import("@/views/admin/Settings")
+        },
+        {
+          path: "/admin/logs",
+          name: "AdminLogs",
+          component: () => import("@/views/admin/Logs")
         }
       ]
     },

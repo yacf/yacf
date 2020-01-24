@@ -1,9 +1,11 @@
 <template>
   <div class="offset">
-    <div v-if="loading">Yo, we loadin'. Hang tight</div>
+    <b-breadcrumb :items="[{ text: 'Mission', to: { name: 'AdminMission' } },{ text: 'Users', href: '#' }]"></b-breadcrumb>
+
+    <div v-if="loading">Loading</div>
     <div v-else>
       <b-card header="Users" header-tag="header">
-        <table id="adminteams" class="table">
+        <table id="adminteams" class="table table-sm table-hover">
           <thead>
             <tr>
               <th>Username</th>

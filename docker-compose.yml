@@ -1,19 +1,58 @@
 version: '3'
 
+networks:
+  ctf-net:
+    driver: bridge
+
 services:
-  redis:
-    restart: always
-    image: redis:5.0.1
-    hostname: redis-broker
-    ports:
-      - "6379:6379"
-  
-  yacf:
-    restart: always
-    build: .
-    dockerfile: backend/Dockerfile
-    hostname: yacf.0x.codes
+  db:
+    restart: unless-stopped
+    image: postgres:latest
+    container_name: db
+    volumes:
+      - ./postgres/data:/var/lib/postgresql/data/
+    networks:
+      - ctf-net
+    environment:
+      - POSTGRES_USER=django
+      - POSTGRES_PASSWORD=plzchange
+      - POSTGRES_DB=postgres
+
+  backend:
+    restart: unless-stopped
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: backend
+    networks:
+      - ctf-net
+    environment:
+      - POSTGRES_USER=django
+      - POSTGRES_PASSWORD=plzchange
+      - POSTGRES_DB=postgres
+      - SQL_HOST=db
+    depends_on:
+      - db
+
+  frontend:
+    restart: unless-stopped
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: frontend
+    networks:
+      - ctf-net
+
+  proxy:
+    restart: unless-stopped
+    image: nginx:latest
+    container_name: proxy
+    volumes:
+      - ./testing/nginix/default.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - ctf-net
     ports:
       - "80:80"
-    links:
-      - redis
+    depends_on:
+      - backend
+      - frontend

@@ -34,7 +34,7 @@ class AddCategory(graphene.Mutation):
     def mutate(self, info, name, description):
         validate_user_is_admin(info.context.user)
 
-        Category(name=name, description=description).save()
+        Category(name=name, description=description).save(action="CR", user=info.context.user)
 
         return AddCategory(code=0)
 
@@ -46,12 +46,12 @@ class RemoveCategory(graphene.Mutation):
 
     def mutate(self, info, id):
         validate_user_is_admin(info.context.user)
-        try:
-            category = Category.objects.get(pk=id)
-            category.delete()
-            message = "success"
-        except:
-            message = "failure"
+        # try:
+        category = Category.objects.get(pk=id)
+        category.delete(user=info.context.user)
+        message = "success"
+        # except:
+        #     message = "failure"
 
         return RemoveCategory(message)
 

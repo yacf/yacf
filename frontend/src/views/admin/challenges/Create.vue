@@ -3,7 +3,6 @@
     <b-breadcrumb :items="[{ text: 'Mission', to: { name: 'AdminMission' } },{ text: 'Challenges', to: { name: 'AdminChallenges' } },{ text: 'Create', href: '#' }]"></b-breadcrumb>
 
     <b-card header="Create Challenge">
-      <b-alert v-for="(error, index) in create.errors" :key="index" show variant="danger">{{error.message}}</b-alert>
       <b-alert v-if="create.code === 0" show variant="success">Challenge Created</b-alert>
 
       <label>Challenge name:</label>
@@ -13,7 +12,7 @@
       <b-form-checkbox v-model="encode" value="true" unchecked-value="false">Base64 Encode</b-form-checkbox>
       <b-form-text>Check this if your challenge is HTML enabled. This will bace64 encode the description to avoid errors with special characters when processing requests.</b-form-text>
       <label>Challenge Points:</label>
-      <input class="form-control" v-model="points" />
+      <input class="form-control" type="number" v-model="points" />
       <label>Challenge Flag:</label>
       <input class="form-control" v-model="flag" />
       <label>Flag Hash:</label>
@@ -33,6 +32,8 @@
       <b-form-checkbox v-model="hidden" value="true" unchecked-value="false">Hidden</b-form-checkbox>
       <hr />
       <p>{{message}}</p>
+      <b-alert v-for="(error, index) in create.errors" :key="index" show variant="danger">{{error.message}}</b-alert>
+
       <button class="btn btn-secondary" @click="addChallenge()">Create</button>
     </b-card>
   </div>
@@ -63,6 +64,9 @@ export default {
       create: "challenges/GET_CREATE"
     })
   },
+  watch() {
+    //that.$router.push({ name: "AdminChallenges" });
+  },
   beforeMount() {
     this.$store.commit("challenges/SET_CREATE_DEFAULT");
     this.$store.dispatch("categories/FETCH_CATEGORIES");
@@ -92,6 +96,13 @@ export default {
           hidden: this.hidden
         });
       } else {
+        console.log("hello");
+        this.$bvToast.toast(`This is toast number BAM!`, {
+          title: "BootstrapVue Toast",
+          autoHideDelay: 5000,
+          appendToast: false
+        });
+
         this.message = "Required feilds missing.";
       }
     }

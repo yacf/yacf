@@ -6,6 +6,7 @@ import teams from "./modules/teams";
 import categories from "./modules/categories";
 import challenges from "./modules/challenges";
 import theme from "./modules/theme";
+import logs from "./modules/logs";
 
 // import { WebSocketBridge } from "django-channels";
 
@@ -44,7 +45,8 @@ export default new Vuex.Store({
     teams,
     categories,
     challenges,
-    theme
+    theme,
+    logs
   },
   state: {
     board: "",

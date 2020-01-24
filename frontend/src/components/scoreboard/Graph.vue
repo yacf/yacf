@@ -5,13 +5,18 @@ import { Line } from "vue-chartjs";
 export default {
   extends: Line,
   props: ["chartData"],
-  data() {
-    return {
-      graphloading: true,
-      graphlabels: [],
-      graphdata: []
-    };
-  },
+  // data() {
+  //   return {
+  //     graphloading: true,
+  //     graphlabels: [],
+  //     graphdata: [],
+  //     options: {
+  //       responsive: true,
+  //       spanGaps: true,
+  //       maintainAspectRatio: false
+  //     }
+  //   };
+  // },
   computed: {
     getlabels() {
       return this.$store.getters.graphlabels;
@@ -24,7 +29,6 @@ export default {
         data: JSON.parse(response.data.graph.message),
         labels: JSON.parse(response.data.graph.timeline)
       });
-
       that.graphloading = false;
     });
   },
@@ -38,7 +42,7 @@ export default {
           labels: this.$store.getters.graphlabels,
           datasets: this.$store.getters.graphdata
         },
-        { responsive: true, maintainAspectRatio: false }
+        { responsive: true, maintainAspectRatio: false, spanGaps: true }
       );
     }
   },

@@ -48,7 +48,7 @@ const actions = {
   FETCH_CHALLENGES({ commit }) {
     commit("SET_CHALLENGES_LOADING", true);
     api(
-      "query { challenges{ id, name, points, hidden, hints { id } category { id, name } } }"
+      "query { challenges{ id, name, points, hidden, hints { id } category { id, name } solvedchallengeSet { id } } }"
     )
       .then(response => {
         if (response.errors) {
@@ -87,7 +87,15 @@ const actions = {
     console.log("In store for create challenge");
     commit("SET_CREATE_LOADING", true);
     api(
-      `mutation{ addChallenge(name:"${payload.name}", description:"${payload.description}", encoded:${payload.encode}, points:${payload.points}, flag:"${payload.flag}", algorithm:"${payload.algorithm}", precomputed:${payload.precomputed}, category:"${payload.category}", hidden:${payload.hidden}) { code } }`
+      `mutation{ addChallenge(name:"${
+        payload.name
+      }", description:${JSON.stringify(payload.description)}, encoded:${
+        payload.encode
+      }, points:${payload.points}, flag:"${payload.flag}", algorithm:"${
+        payload.algorithm
+      }", precomputed:${payload.precomputed}, category:"${
+        payload.category
+      }", hidden:${payload.hidden}) { code } }`
     )
       .then(response => {
         if (response.errors) {

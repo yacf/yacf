@@ -8,7 +8,7 @@
       <b-collapse is-nav id="main_nav_collapse">
         <b-navbar-nav>
           <template v-if="new Date() > new Date(settings.start)">
-            <b-nav-item v-if="auth && !settings.privacy" @click="$router.push({ name: 'Scoreboard'});">Scoreboard -- {{settings.privacy}}</b-nav-item>
+            <b-nav-item v-if="auth && !settings.privacy" @click="$router.push({ name: 'Scoreboard'});">Scoreboard</b-nav-item>
             <b-nav-item v-if="auth" @click="$router.push({ name: 'Challenges'});">Challenges</b-nav-item>
           </template>
           <b-nav-item v-for="page in pages" :key="page.id" @click="$router.push({ name: 'Page', params: { 'url': page.url }});">{{page.name}}</b-nav-item>

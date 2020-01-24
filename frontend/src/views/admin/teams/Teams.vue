@@ -16,7 +16,8 @@
               <th>Affiliation</th>
               <th>Website</th>
               <th>Admin Email</th>
-              <th>Number of Members</th>
+              <th>Member Count</th>
+              <th>Points</th>
               <th style="text-align: right;">Options</th>
             </tr>
           </thead>
@@ -26,7 +27,8 @@
               <td>{{team.affiliation}}</td>
               <td>{{team.website}}</td>
               <td>{{team.email}}</td>
-              <td>{{team.members}}</td>
+              <td>{{team.players.length}}</td>
+              <td>{{team.points}}</td>
               <td>
                 <div>
                   <RemoveTeam :team="team" />
@@ -62,7 +64,7 @@ export default {
     })
   },
   beforeMount() {
-    this.$store.dispatch("teams/FETCH_TEAMS");
+    this.$store.dispatch("teams/FETCH_ADMIN_TEAMS");
   }
 };
 </script>

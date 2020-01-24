@@ -25,7 +25,7 @@ const getters = {
     return state.create;
   },
   ranks: state => {
-    return state.teams.sort(function(a, b) {
+    return state.teams.data.sort(function(a, b) {
       return b.points - a.points;
     });
   },
@@ -47,7 +47,27 @@ const actions = {
   FETCH_TEAMS({ commit }) {
     commit("SET_TEAMS_LOADING", true);
     api(
-      `query{ teams {id, name, affiliation, website, points, correctFlags, wrongFlags} }`
+      `query{ teams {id, name, affiliation, website, points, correctFlags, wrongFlags} totalPoints }`
+    )
+      .then(response => {
+        if (response.errors) {
+          commit("SET_TEAMS_ERROR", response.errors);
+        } else {
+          commit("SET_TEAMS", response.data.teams);
+          commit("SET_MAX_POINTS", response.data.totalPoints);
+        }
+      })
+      .catch(error => {
+        commit("SET_TEAMS_ERROR", error.response.data.errors);
+      })
+      .finally(function() {
+        commit("SET_TEAMS_LOADING", false);
+      });
+  },
+  FETCH_ADMIN_TEAMS({ commit }) {
+    commit("SET_TEAMS_LOADING", true);
+    api(
+      `query{ teams {id, name, affiliation, website, points, players { id } } }`
     )
       .then(response => {
         if (response.errors) {

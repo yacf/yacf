@@ -4,8 +4,6 @@ from uauth.validators import validate_user_is_authenticated, validate_user_is_ad
 
 from pages.models import Page
 
-import json
-
 class PageType(DjangoObjectType):
     class Meta:
         model = Page

@@ -81,7 +81,7 @@ export default {
           firstname: this.firstname,
           lastname: this.lastname,
           username: this.username,
-          password: this.password1
+          password: JSON.stringify(this.password1)
         });
       } else {
         this.message = "Missing required feilds";

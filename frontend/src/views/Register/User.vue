@@ -46,7 +46,13 @@ export default {
     Register() {
       let self = this;
       api(
-        `mutation {  adduser(username:"${this.username}", email:"${this.email}", password:"${this.password1}", firstname:"${this.firstname}", lastname:"${this.lastname}", accesscode:"${this.accesscode}") { code } }`
+        `mutation {  adduser(username:"${this.username}", email:"${
+          this.email
+        }", password:"${JSON.stringify(this.password1)}", firstname:"${
+          this.firstname
+        }", lastname:"${this.lastname}", accesscode:"${
+          this.accesscode
+        }") { code } }`
       ).then(data => {
         console.log(data);
         if (data.errors) {

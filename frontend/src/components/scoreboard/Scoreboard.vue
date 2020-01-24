@@ -57,7 +57,7 @@ export default {
     })
   },
   beforeMount() {
-    this.$store.dispatch("teams/loadTeams");
+    this.$store.dispatch("teams/FETCH_TEAMS");
   },
   methods: {
     searchteam() {

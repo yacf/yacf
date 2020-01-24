@@ -4,16 +4,17 @@
       <b-navbar-toggle target="main_nav_collapse"></b-navbar-toggle>
 
       <b-navbar-brand @click="$router.push({ name: 'Home'});" style="cursor: pointer;">
-        <img src="/static/img/logo.png" alt="YACF" height="25" />
+        <img :src="require('@/assets/img/logo.png')" alt="YACF" height="25" />
       </b-navbar-brand>
 
       <b-collapse is-nav id="main_nav_collapse">
-        <b-navbar-nav></b-navbar-nav>
+        <b-navbar-nav>
+          <b-nav-item @click="$router.push({ name: 'Home'});">Home</b-nav-item>
+          <b-nav-item @click="$router.push({ name: 'Scoreboard'});">Scoreboard</b-nav-item>
+          <b-nav-item @click="$router.push({ name: 'Challenges'});">Challenges</b-nav-item>
+        </b-navbar-nav>
 
         <b-navbar-nav class="ml-auto">
-          <b-nav-item v-if="superuser" @click="$router.push({ name: 'Home'});">Home</b-nav-item>
-          <b-nav-item v-else @click="$router.push(`/team/${$store.getters['user/userteam']}`);">{{this.$store.getters['user/userteam']}}</b-nav-item>
-
           <template v-if="auth">
             <b-nav-item-dropdown right>
               <template slot="button-content">
@@ -58,18 +59,24 @@
           <b-nav-item @click="$router.push({ name: 'AdminSurveys'});">
             <font-awesome-icon :icon="poll" id="navbar-icon" style="margin-right:7px;" />Surveys
           </b-nav-item>
-          <!-- <b-nav-item @click="$router.push({ name: 'AdminWelcome'});">
-            <font-awesome-icon :icon="home" id="navbar-icon" style="margin-right:7px;" />Home Page
-          </b-nav-item>-->
+          <b-nav-item @click="$router.push({ name: 'AdminWelcome'});">
+            <font-awesome-icon :icon="home" id="navbar-icon" style="margin-right:7px;" />Home
+          </b-nav-item>
           <b-nav-item @click="$router.push({ name: 'AdminPages'});">
             <font-awesome-icon :icon="copy" id="navbar-icon" style="margin-right:7px;" />Pages
           </b-nav-item>
           <b-nav-item @click="$router.push({ name: 'AdminSettings'});">
             <font-awesome-icon :icon="setting" id="navbar-icon" style="margin-right:7px;" />Settings
           </b-nav-item>
-
-          <!-- <b-nav-item v-if="auth" @click="$router.push({ name: 'Challenges'});">Challenges</b-nav-item> -->
+          <b-nav-item @click="$router.push({ name: 'AdminLogs'});">
+            <font-awesome-icon :icon="copy" id="navbar-icon" style="margin-right:7px;" />Logs
+          </b-nav-item>
         </b-navbar-nav>
+        <!-- <b-navbar-nav class="ml-auto">
+          <b-nav-item @click="$router.push({ name: 'AdminSettings'});">
+            <font-awesome-icon :icon="question" id="navbar-icon" style="margin-right:7px;" />Help
+          </b-nav-item>
+        </b-navbar-nav>-->
       </b-collapse>
     </b-navbar>
     <router-view></router-view>

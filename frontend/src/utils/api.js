@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export function api(query) {
-  console.log("[API UTIL]: ", query);
+  // console.log("[API UTIL]: ", query);
   return axios({
     method: "post",
     url: "/api/",

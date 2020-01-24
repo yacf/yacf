@@ -16,6 +16,7 @@
               <th>Points</th>
               <th>Hints</th>
               <th>Hidden</th>
+              <th>Solves</th>
               <th style="text-align: right;">Options</th>
             </tr>
           </thead>
@@ -30,6 +31,7 @@
               <td>{{challenge.points}}</td>
               <td>{{challenge.hints.length}}</td>
               <td>{{challenge.hidden}}</td>
+              <td>{{challenge.solvedchallengeSet.length}}</td>
               <td>
                 <div>
                   <RemoveChallenge :challenge="challenge" />

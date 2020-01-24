@@ -5,7 +5,7 @@ class Challenge(models.Model):
     # TODO: REMOVE delete on cascade! We may not want to delete all the challenges too
     category = models.ForeignKey(Category, null=False, on_delete=models.CASCADE, related_name='challenges')
 
-    name = models.CharField(max_length=25)
+    name = models.CharField(max_length=25, unique=True)
     description = models.CharField(max_length=1000)
 
     points = models.IntegerField(default=0)
