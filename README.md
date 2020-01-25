@@ -22,6 +22,14 @@ docker exec -i -t <NAME> /bin/bash
 ```
 
 ```
+docker run -d -p5432:5432 -e POSTGRES_USER=django -e POSTGRES_PASSWORD=plzchange -e POSTGRES_DB=postgres -v $(pwd)/postgres/data:/var/lib/postgresql/data/ postgres:latest
+```
+
+```
+docker exec <postgres_container_name> pg_dump -U postgres <database_name> > backup.sql
+```
+
+```
 import random
 import string
 

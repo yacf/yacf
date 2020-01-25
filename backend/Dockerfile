@@ -27,8 +27,8 @@ RUN pip3 install -r /tmp/requirements.txt
 
 COPY . /var/www/backend/
 
-RUN chmod 664 /var/www/backend/db.sqlite3
-RUN chown -R www-data:www-data /var/www/
+#RUN chmod 664 /var/www/backend/db.sqlite3
+#RUN chown -R www-data:www-data /var/www/
 
 COPY development.conf /etc/apache2/sites-available/000-default.conf
 
