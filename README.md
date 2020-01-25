@@ -26,7 +26,10 @@ docker run -d -p5432:5432 -e POSTGRES_USER=django -e POSTGRES_PASSWORD=plzchange
 ```
 
 ```
-docker exec <postgres_container_name> pg_dump -U postgres <database_name> > backup.sql
+docker exec <postgres_container_name> pg_dump -U <username> <database_name> > <file.sql>
+
+docker exec <postgres_container_name> psql -U <username> -d <database_name>  -f <file.sql>
+
 ```
 
 ```

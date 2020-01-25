@@ -14,9 +14,9 @@ services:
     networks:
       - ctf-net
     environment:
+      - POSTGRES_DB=yacf
       - POSTGRES_USER=django
       - POSTGRES_PASSWORD=plzchange
-      - POSTGRES_DB=postgres
 
   server:
     restart: unless-stopped

@@ -37,5 +37,3 @@ if __name__ == "__main__":
 
     # Make the admin user
     makeAdminUser()
-
-    #Make welcome page

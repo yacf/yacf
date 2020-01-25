@@ -32,7 +32,7 @@ def resetDjangoDB():
     os.system('python3 manage.py migrate')   
 
 def makeAdminUser():
-    admin = User.objects.create_superuser("admin", "email@email.com", "password1", first_name="Admin", last_name="Admin")
+    admin = User.objects.create_superuser("yacf", "email@email.com", "yacf", first_name="Admin")
     admin.save()
     profile = Profile(user=admin, verified=True)
     profile.save()

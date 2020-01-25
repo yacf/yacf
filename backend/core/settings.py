@@ -117,7 +117,7 @@ redis_host = os.environ.get('REDIS_HOST', 'localhost')
 DATABASES = {
     "default": {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'postgres',
+        'NAME': 'yacf',
         "USER": os.environ.get("POSTGRES_USER", "django"),
         "PASSWORD": os.environ.get("POSTGRES_PASSWORD", "plzchange"),
         "HOST": os.environ.get("SQL_HOST", "localhost"),
