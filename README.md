@@ -39,3 +39,11 @@ import string
 password_characters = string.ascii_letters + string.digits + string.punctuation
 ''.join(random.choice(password_characters) for i in range(50))
 ```
+
+Security Checklist
+```
+Change DNS in confs
+Change key for django
+Change django Debug to off
+Change DB password
+```
