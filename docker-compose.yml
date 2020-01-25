@@ -23,7 +23,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: backend
+    container_name: server
     networks:
       - ctf-net
     environment:
@@ -39,7 +39,7 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    container_name: frontend
+    container_name: client
     volumes:
       - ./confs/nginix/frontend.conf:/etc/nginx/conf.d/default.conf
     networks:
@@ -60,5 +60,5 @@ services:
       - "80:80"
       #- "443:443"
     depends_on:
-      - backend
-      - frontend
+      - server
+      - client
