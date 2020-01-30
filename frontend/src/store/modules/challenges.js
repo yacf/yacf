@@ -111,6 +111,24 @@ const actions = {
         commit("SET_CREATE_LOADING", false);
       });
   },
+  UPDATE_CHALLENGE({ commit }, payload) {
+    console.log(payload);
+    api(
+      `mutation { updateChallenge(category:"${payload.category}", id:${payload.id}, name:"${payload.name}", description:"${payload.description}", points:${payload.points}, show:${payload.show}){ code } }`
+    )
+      .then(response => {
+        
+        if (response.errors) {
+          commit("SET_UPDATE_ERROR", response.errors);
+        } else {
+          console.log(response)
+          commit("SET_UPDATE_CODE", response.data.updateChallenge.code);
+        }
+      })
+      .catch(error => {
+        commit("SET_UPDATE_ERROR", error.response.data.errors);
+      });
+  },  
   POST_FLAG({ commit }, id, flag) {
     api(`mutation{ submitflag(challenge:${id}, flag:"${flag}"){ code } }`).then(
       response => {
@@ -166,7 +184,25 @@ const mutations = {
   },
   SET_CREATE_LOADING(state, payload) {
     state.create.loading = payload;
+  },
+    /*
+    ----- Categories UPDATE --------
+  */
+ SET_UPDATE_DEFAULT(state) {
+  state.update = { code: -1, errors: [], loading: false };
+  },
+  SET_UPDATE_ERROR(state, payload) {
+    state.update.errors = payload;
+  },
+  SET_UPDATE_CODE(state, payload) {
+    state.update.code = payload;
+  },
+  SET_UPDATE_LOADING(state, payload) {
+    state.update.loading = payload;
   }
+  /*
+    ---- End Categories UPDATE -----
+  */
 };
 
 export default {

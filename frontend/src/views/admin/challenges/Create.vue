@@ -9,8 +9,8 @@
       <input class="form-control" v-model="name" />
       <label>Challenge Description (html enabled):</label>
       <textarea class="form-control" rows="7" v-model="description"></textarea>
-      <b-form-checkbox v-model="encode" value="true" unchecked-value="false">Base64 Encode</b-form-checkbox>
-      <b-form-text>Check this if your challenge is HTML enabled. This will bace64 encode the description to avoid errors with special characters when processing requests.</b-form-text>
+      <!-- <b-form-checkbox v-model="encode" value="true" unchecked-value="false">Base64 Encode</b-form-checkbox> -->
+      <!-- <b-form-text>Check this if your challenge is HTML enabled. This will bace64 encode the description to avoid errors with special characters when processing requests.</b-form-text> -->
       <label>Challenge Points:</label>
       <input class="form-control" type="number" v-model="points" />
       <label>Challenge Flag:</label>

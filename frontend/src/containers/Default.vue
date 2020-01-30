@@ -23,7 +23,7 @@
               <template slot="button-content">
                 <span>{{username}}</span>
               </template>
-              <b-dropdown-item @click="$router.push(`/profile`);">Profile</b-dropdown-item>
+              <!-- <b-dropdown-item @click="$router.push(`/profile`);">Profile</b-dropdown-item> -->
               <b-dropdown-item @click="logout">Signout</b-dropdown-item>
             </b-nav-item-dropdown>
           </template>

@@ -146,20 +146,19 @@ class RemoveChallenge(graphene.Mutation):
         return RemoveChallenge(code)
 
 class UpdateChallenge(graphene.Mutation):
-    message = graphene.String()
+    code = graphene.Int()
 
     class Arguments:
         id          = graphene.Int(required=True)
         name        = graphene.String(required=True)
         description = graphene.String(required=True)
         points      = graphene.Int(required=False)
-        flag        = graphene.String(required=False)
         show        = graphene.Boolean(required=False)
 
         category    = graphene.String(required=False)
 
     #TODO: Need to check and ensure no challenge is made with the same points as another challenge. If not, frontend stats break
-    def mutate(self, info, id, name, description, points=0, flag="", show=False, category=None):
+    def mutate(self, info, id, name, description, points=0, show=False, category=None):
         validate_user_is_admin(info.context.user)
 
         # try:
@@ -168,18 +167,17 @@ class UpdateChallenge(graphene.Mutation):
         challenge.name = name
         challenge.description = description
         challenge.points = points
-        challenge.flag.value = flag
         challenge.show = show
         challenge.category = category
 
         challenge.save()
 
 
-        message = "success"
+        code = 0
         # except:
         #     message = "failure"
 
-        return UpdateChallenge(message)
+        return UpdateChallenge(code)
 
 
 class SubmitFlag(graphene.Mutation):

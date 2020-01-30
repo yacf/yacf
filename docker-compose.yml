@@ -27,6 +27,8 @@ services:
     networks:
       - ctf-net
     environment:
+      - DEBUGGER=True
+      - APP_KEY="plzchange"
       - POSTGRES_USER=django
       - POSTGRES_PASSWORD=plzchange
       - POSTGRES_DB=postgres

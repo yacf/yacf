@@ -46,4 +46,6 @@ Change DNS in confs
 Change key for django
 Change django Debug to off
 Change DB password
+Disable GraphiQL
+CORS Disable
 ```
