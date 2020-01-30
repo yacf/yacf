@@ -6,8 +6,12 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView
 from graphene_django.views import GraphQLView
 
+if os.environ.get("DEBUGGER") == 'True':
+    show = True
+else:
+    show = False
+
 urlpatterns = [
     path('21232f297a57a5a743894a0e4a801fc3/', admin.site.urls),
-    path('api/', csrf_exempt(GraphQLView.as_view(graphiql=os.environ.get("DEBUGGER", True)))),
-    # re_path(r'^',csrf_exempt(TemplateView.as_view(template_name='index.html')))
+    path('api/', csrf_exempt(GraphQLView.as_view(graphiql=show))),
 ]
