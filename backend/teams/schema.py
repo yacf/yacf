@@ -46,7 +46,7 @@ class AccessCodeType(DjangoObjectType):
             raise Exception('Not authorized to view accesscode information for teams')
 
 class Query(graphene.ObjectType):
-    teams = graphene.List(TeamType, first=graphene.Int(), skip=graphene.Int())
+    teams = graphene.List(TeamType, hidden=graphene.Boolean(), first=graphene.Int(), skip=graphene.Int())
     solves = graphene.List(SolvedChallengeType, first=graphene.Int(), skip=graphene.Int())
     failures = graphene.List(FailureType, first=graphene.Int(), skip=graphene.Int())
 
@@ -57,10 +57,13 @@ class Query(graphene.ObjectType):
 
     team_sovle = graphene.List(SolvedChallengeType)
 
-    def resolve_teams(self, info, first=None, skip=None, **kwargs):
+    def resolve_teams(self, info, hidden=None, first=None, skip=None, **kwargs):
         validate_user_is_authenticated(info.context.user)
         if validate_user_is_staff(info.context.user):
-            teams = Team.objects.all()
+            if not hidden:
+                teams = Team.objects.filter(hidden=True)
+            else:
+                teams = Team.objects.all()
         else:
             if Event.objects.first() and Event.objects.first().private is True:
                 raise Exception("This event is being run in privacy mode. You are not allowed to query all teams.")
@@ -266,7 +269,10 @@ class Graph(graphene.Mutation):
                     raise Exception("This event is being run in privacy mode. You are not allowed to query teams.")
 
         # Sort to get the top 5 by point value
-        teams = sorted(list(Team.objects.all()), key=lambda x: x.points, reverse=True)[:5]
+        if validate_user_is_staff(info.context.user):
+            teams = sorted(list(Team.objects.all()), key=lambda x: x.points, reverse=True)[:5]
+        else:
+            teams = sorted(list(Team.objects.filter(hidden=False)), key=lambda x: x.points, reverse=True)[:5]
 
         # Get all solved challenges from the top 5 teams.
         solved = SolvedChallenge.objects.filter(team__name__in=[team.name for team in teams]).order_by('timestamp')

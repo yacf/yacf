@@ -11,7 +11,7 @@
         <h1>{{challenges}}</h1>
       </b-card>
       <b-card title="Solves">
-        <h1>{{solves.length}}</h1>
+        <h1>{{solveslen}}</h1>
       </b-card>
     </b-card-group>
 
@@ -52,6 +52,7 @@ export default {
       teams: 0,
       users: 0,
       solves: 0,
+      solveslen: 0,
       failures: []
     };
   },
@@ -60,11 +61,16 @@ export default {
     api("query { challenges{ id } }").then(response => {
       self.challenges = response.data.challenges.length;
     });
-    api("query { teams{ id } }").then(response => {
+    api("query { teams(hidden:false){ id } }").then(response => {
       self.teams = response.data.teams.length;
     });
-    api("query { users{ id } }").then(response => {
+    api("query { users(hidden:false) { id } }").then(response => {
       self.users = response.data.users.length;
+    });
+    api(
+      "query { solves { id } }"
+    ).then(response => {
+      self.solveslen = response.data.solves.length;
     });
     api(
       "query { solves(first:10, skip:0) { id team { name } challenge { name } timestamp } }"

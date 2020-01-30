@@ -48,7 +48,7 @@ export default {
       api(
         `mutation {  adduser(username:"${this.username}", email:"${
           this.email
-        }", password:"${JSON.stringify(this.password1)}", firstname:"${
+        }", password:${JSON.stringify(this.password1)}, firstname:"${
           this.firstname
         }", lastname:"${this.lastname}", accesscode:"${
           this.accesscode

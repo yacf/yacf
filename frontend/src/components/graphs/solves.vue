@@ -12,12 +12,12 @@ export default {
         datasets: [
           {
             label: "Solves",
-            backgroundColor: "#f87979",
+            backgroundColor: "#d4ecda",
             data: []
           },
           {
             label: "Failures",
-            backgroundColor: "#f87000",
+            backgroundColor: "#f8d7da",
             data: []
           }
         ]

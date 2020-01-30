@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-alert v-if="this.$store.getters['user/isAdmin']" style="text-align: center;" show>You are an Admin. The challenge board will have limit functionality.</b-alert>
+    <b-alert v-if="this.$store.getters['user/isAdmin']" style="text-align: center;" show>You are an Admin. The challenge board will have limited functionality.</b-alert>
     <div v-if="board.loading">Loading..</div>
     <div v-else>
       <div v-if="board.data">

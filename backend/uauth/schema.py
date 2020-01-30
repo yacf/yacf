@@ -60,16 +60,19 @@ class LoginTrackerType(DjangoObjectType):
         model = LoginTracker
 
 class Query(object):
-    users = graphene.List(UserType)
+    users = graphene.List(UserType, hidden=graphene.Boolean())
     me = graphene.Field(Me)
     profile = graphene.Field(ProfileType)
 
     login_tracker = graphene.List(LoginTrackerType)
 
-    def resolve_users(self, info):
+    def resolve_users(self, info, hidden=None):
         validate_user_is_admin(info.context.user)
         if validate_user_is_staff(info.context.user):
-            return User.objects.all()
+            if not hidden:
+                return User.objects.filter(profile__hidden=False)
+            else:
+                return User.objects.all()
         else:
             raise Exception('Not authorized to view query users')
 
