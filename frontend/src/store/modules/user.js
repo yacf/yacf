@@ -67,7 +67,7 @@ const actions = {
     commit("SET_CREATE_ADMIN_RESET");
     commit("SET_CREATE_ADMIN_LOADING", true);
     api(
-      `mutation { createadmin(key:"${payload.key}", firstname:"${payload.firstname}", lastname:"${payload.lastname}", username:"${payload.username}", password:"${payload.password}"){ code } }`
+      `mutation { createadmin(key:"${payload.key}", firstname:"${payload.firstname}", lastname:"${payload.lastname}", username:"${payload.username}", password:${JSON.stringify(payload.password)}){ code } }`
     )
       .then(response => {
         if (response.errors) {
