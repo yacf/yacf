@@ -14,7 +14,7 @@ services:
     networks:
       - ctf-net
     environment:
-      - POSTGRES_DB=yacf
+      - POSTGRES_DB=postgres
       - POSTGRES_USER=django
       - POSTGRES_PASSWORD=plzchange
 
@@ -27,11 +27,11 @@ services:
     networks:
       - ctf-net
     environment:
-      - DEBUGGER=True
+      - DEBUGGER=False
       - APP_KEY="plzchange"
+      - POSTGRES_DB=postgres
       - POSTGRES_USER=django
       - POSTGRES_PASSWORD=plzchange
-      - POSTGRES_DB=postgres
       - SQL_HOST=db
     depends_on:
       - db

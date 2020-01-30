@@ -23,7 +23,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.environ.get("APP_KEY", 'flgx-!(gg^r-be@2yqq*y#azdnp71qt*4l6g5dk3&f$$c)3b=8')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get("DEBUGGER", True)
+if os.environ.get("DEBUGGER") == 'True':
+    DEBUG = True
+else:
+    DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -52,8 +55,12 @@ INSTALLED_APPS = [
     'corsheaders', #DEV!
 ]
 
-CORS_ALLOW_CREDENTIALS= os.environ.get("DEBUGGER", True)
-CORS_ORIGIN_ALLOW_ALL= os.environ.get("DEBUGGER", True)
+if os.environ.get("DEBUGGER") == 'True':
+    CORS_ALLOW_CREDENTIALS = True
+    CORS_ORIGIN_ALLOW_ALL = True
+else:
+    CORS_ALLOW_CREDENTIALS = False
+    CORS_ORIGIN_ALLOW_ALL = False
 
 
 MIDDLEWARE = [
@@ -117,7 +124,7 @@ redis_host = os.environ.get('REDIS_HOST', 'localhost')
 DATABASES = {
     "default": {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'yacf',
+        'NAME': os.environ.get("POSTGRES_DB", "postgres"),
         "USER": os.environ.get("POSTGRES_USER", "django"),
         "PASSWORD": os.environ.get("POSTGRES_PASSWORD", "plzchange"),
         "HOST": os.environ.get("SQL_HOST", "localhost"),
@@ -151,6 +158,8 @@ AUTH_PASSWORD_VALIDATORS = [
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'America/Chicago'
+
+USE_TZ = False
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),

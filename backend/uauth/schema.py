@@ -193,7 +193,7 @@ class LogIn(graphene.Mutation):
 
         print(info.context.META.get('HTTP_X_FORWARDED_FOR'), info.context.META.get('HTTP_X_REAL_IP'), info.context.META.get('HTTP_USER_AGENT'))
         try:
-            logintracker = LoginTracker(user=userobj, address=info.context.META.get('HTTP_X_FORWARDED_FOR'), agent=info.context.META.get('HTTP_USER_AGENT'))
+            logintracker = LoginTracker(user=userobj, address=info.context.META.get('HTTP_X_REAL_IP'), agent=info.context.META.get('HTTP_USER_AGENT'))
             logintracker.save()
         except:
             pass
