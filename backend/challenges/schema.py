@@ -9,7 +9,7 @@ from settings.validators import validate_active_event
 
 from categories.models import Category
 from challenges.models import Challenge, Flag, Hash, Hint
-from teams.models import SolvedChallenge, Failure
+from teams.models import SolvedChallenge, Failure, FlagTracker
 from uauth.models import Profile
 
 class ChallengeType(DjangoObjectType):
@@ -229,6 +229,19 @@ class SubmitFlag(graphene.Mutation):
         if solved:
             solve = SolvedChallenge(team=team, user=info.context.user, challenge=challenge)
             solve.save()
+            FlagTracker
+            '''
+            Flag tracker
+
+            '''
+            print(info.context.META.get('HTTP_X_FORWARDED_FOR'), info.context.META.get('HTTP_X_REAL_IP'), info.context.META.get('HTTP_USER_AGENT'))
+            # try:
+            flagtracker = FlagTracker(solve=solve, address=info.context.META.get('HTTP_X_FORWARDED_FOR'), agent=info.context.META.get('HTTP_USER_AGENT'))
+            flagtracker.save()
+            # except:
+            #     pass
+
+
             code=1
         else:
             fail = Failure(team=team, user=info.context.user, challenge=challenge)

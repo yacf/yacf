@@ -10,7 +10,7 @@ from uauth.models import Profile
 import string, random, json
 
 from settings.models import Event
-from teams.models import Team, AccessCode, SolvedChallenge, Failure
+from teams.models import Team, AccessCode, SolvedChallenge, Failure, FlagTracker
 
 class TeamType(DjangoObjectType):
     points = graphene.Int()
@@ -45,6 +45,10 @@ class AccessCodeType(DjangoObjectType):
         else:
             raise Exception('Not authorized to view accesscode information for teams')
 
+class FlagTrackerType(DjangoObjectType):
+    class Meta:
+        model = FlagTracker
+
 class Query(graphene.ObjectType):
     teams = graphene.List(TeamType, hidden=graphene.Boolean(), first=graphene.Int(), skip=graphene.Int())
     solves = graphene.List(SolvedChallengeType, first=graphene.Int(), skip=graphene.Int())
@@ -57,13 +61,17 @@ class Query(graphene.ObjectType):
 
     team_sovle = graphene.List(SolvedChallengeType)
 
+    flag_tracker = graphene.List(FlagTrackerType)
+
     def resolve_teams(self, info, hidden=None, first=None, skip=None, **kwargs):
         validate_user_is_authenticated(info.context.user)
         if validate_user_is_staff(info.context.user):
-            if not hidden:
-                teams = Team.objects.filter(hidden=True)
+            if hidden is True:
+                return Team.objects.filter(hidden=True)
+            elif hidden is False:
+                return Team.objects.filter(hidden=False)
             else:
-                teams = Team.objects.all()
+                return Team.objects.all()
         else:
             if Event.objects.first() and Event.objects.first().private is True:
                 raise Exception("This event is being run in privacy mode. You are not allowed to query all teams.")
@@ -145,6 +153,12 @@ class Query(graphene.ObjectType):
         validate_user_is_authenticated(info.context.user)
         profile = Profile.objects.get(user=info.context.user)
         return SolvedChallenge.objects.filter(team=profile.team)
+
+    def resolve_flag_tracker(self, info, **kwargs):
+        if validate_user_is_staff(info.context.user):
+            return FlagTracker.objects.all()
+        else:
+            raise Exception('Not authorized to view flag tracking information')
 
 
 # ------------------- MUTATIONS -------------------

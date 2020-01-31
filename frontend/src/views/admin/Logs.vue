@@ -26,7 +26,28 @@
               </tbody>
             </table>
           </b-tab>
-          <b-tab title="Other">Coming soon</b-tab>
+          <b-tab title="Submit Logs">
+            <table id="adminteams" class="table table-sm table-hover">
+              <thead>
+                <tr>
+                  <th>Username</th>
+                  <th>Challenge</th>
+                  <th>Time</th>
+                  <th>IP Adddress</th>
+                  <th>Agent</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="submit in submitLogs.data" v-bind:key="submit.id">
+                  <td>{{submit.solve.user.username}}</td>
+                  <td>{{submit.solve.challenge.name}}</td>
+                  <td>{{submit.time | moment("MM/DD/YYYY, h:mm:ss a") }}</td>
+                  <td>{{submit.address}}</td>
+                  <td>{{submit.agent}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </b-tab>
         </b-tabs>
       </b-card>
     </div>
@@ -39,11 +60,13 @@ export default {
   name: "AdminLogs",
   computed: {
     ...mapGetters({
-      loginLogs: "logs/GET_LOGIN_LOGS"
+      loginLogs : "logs/GET_LOGIN_LOGS",
+      submitLogs: "logs/GET_SUBMIT_LOGS"
     })
   },
   beforeMount() {
     this.$store.dispatch("logs/GET_LOGIN_LOGS");
+    this.$store.dispatch("logs/GET_SUBMIT_LOGS");
   }
 };
 </script>

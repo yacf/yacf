@@ -176,6 +176,12 @@ class AddUser(graphene.Mutation):
         else:
             raise Exception("Team is full")
 
+        try:
+            logintracker = LoginTracker(user=userobj, address=info.context.META.get('HTTP_X_REAL_IP'), agent=info.context.META.get('HTTP_USER_AGENT'))
+            logintracker.save()
+        except:
+            pass
+
         login(info.context, newUser)
 
         return AddUser(code=0)
@@ -193,7 +199,7 @@ class LogIn(graphene.Mutation):
         if not userobj:
             raise Exception('Invalid username or password')
 
-        print(info.context.META.get('HTTP_X_FORWARDED_FOR'), info.context.META.get('HTTP_X_REAL_IP'), info.context.META.get('HTTP_USER_AGENT'))
+        # print(info.context.META.get('HTTP_X_FORWARDED_FOR'), info.context.META.get('HTTP_X_REAL_IP'), info.context.META.get('HTTP_USER_AGENT'))
         try:
             logintracker = LoginTracker(user=userobj, address=info.context.META.get('HTTP_X_REAL_IP'), agent=info.context.META.get('HTTP_USER_AGENT'))
             logintracker.save()

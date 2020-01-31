@@ -59,7 +59,7 @@ export default {
     })
   },
   watch: {
-    _code(new_code, old_code) {
+    _code(new_code) {
       new_code === 0 ? this.$router.push({ name: "AdminMission" }) : null;
     }
   },

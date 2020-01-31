@@ -63,6 +63,8 @@ class SolvedChallenge(models.Model):
     challenge = models.ForeignKey(Challenge, default=None, null=True, on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return "%s - %s" % ( self.team.name, self.challenge.name )
 '''
 TODO: Consider logging the incorrect submission
 '''
@@ -78,3 +80,19 @@ class Failure(models.Model):
 
     def __str__(self):
         return "%s - %s" % (self.team.name, self.challenge.name)
+
+'''
+Start of logs
+'''
+class FlagTracker(models.Model):
+    """
+    Track location of flags submitted
+    """
+    solve = models.ForeignKey(SolvedChallenge, related_name='tracker', on_delete=models.CASCADE)
+    address = models.CharField(max_length=16)
+    agent = models.CharField(max_length=200)
+
+    time = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return "%s - %s" % ( self.solve, self.address )

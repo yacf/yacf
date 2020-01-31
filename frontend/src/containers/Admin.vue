@@ -104,7 +104,6 @@ import {
   faQuestionCircle,
   faHome,
   faCopy,
-  faCheck,
   faCog,
   faBars,
   faPollH

@@ -91,7 +91,7 @@ const actions = {
     });
   },
 
-  loadUser({ commit }) {
+  loadUser() {
     api(
       "query { me{ id, username, firstName, lastName, profile{ team { id name } } } }"
     ).then(response => {

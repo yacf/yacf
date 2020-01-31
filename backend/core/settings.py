@@ -43,7 +43,6 @@ INSTALLED_APPS = [
     'graphene_django',
     # 'channels',
     'django_filters',
-    'logs',
     'uauth',
     'server',
     'index',
@@ -51,6 +50,7 @@ INSTALLED_APPS = [
     'teams',
     'settings',
     'categories',
+    'logs',
     'challenges',
     'corsheaders', #DEV!
 ]

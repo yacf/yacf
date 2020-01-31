@@ -37,7 +37,6 @@
 
 
 <script>
-import { api } from "@/utils/api";
 import { mapGetters } from "vuex";
 import RemoveChallenge from "@/components/admin/remove/challenge.vue";
 

@@ -129,13 +129,13 @@ const actions = {
         commit("SET_UPDATE_ERROR", error.response.data.errors);
       });
   },  
-  POST_FLAG({ commit }, id, flag) {
-    api(`mutation{ submitflag(challenge:${id}, flag:"${flag}"){ code } }`).then(
-      response => {
-        console.log(response.data.submitflag);
-      }
-    );
-  }
+  // POST_FLAG({ commit }, id, flag) {
+  //   api(`mutation{ submitflag(challenge:${id}, flag:"${flag}"){ code } }`).then(
+  //     response => {
+  //       console.log(response.data.submitflag);
+  //     }
+  //   );
+  // }
 };
 
 const mutations = {
@@ -169,7 +169,7 @@ const mutations = {
   SET_CHALLENGE(state, payload) {
     state.challenge.data = payload;
   },
-  SET_CHALLENGE_DEFAULT(state, payload) {
+  SET_CHALLENGE_DEFAULT(state) {
     state.challenge = { code: -1, errors: [], loading: false };
   },
   ////////
