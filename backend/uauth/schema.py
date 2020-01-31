@@ -69,7 +69,9 @@ class Query(object):
     def resolve_users(self, info, hidden=None):
         validate_user_is_admin(info.context.user)
         if validate_user_is_staff(info.context.user):
-            if not hidden:
+            if hidden is True:
+                return User.objects.filter(profile__hidden=True)
+            elif hidden is False:
                 return User.objects.filter(profile__hidden=False)
             else:
                 return User.objects.all()

@@ -114,7 +114,7 @@ const actions = {
   UPDATE_CHALLENGE({ commit }, payload) {
     console.log(payload);
     api(
-      `mutation { updateChallenge(category:"${payload.category}", id:${payload.id}, name:"${payload.name}", description:"${payload.description}", points:${payload.points}, show:${payload.show}){ code } }`
+      `mutation { updateChallenge(category:"${payload.category}", id:${payload.id}, name:"${payload.name}", description:${JSON.stringify(payload.description)}, points:${payload.points}, show:${payload.show}){ code } }`
     )
       .then(response => {
         

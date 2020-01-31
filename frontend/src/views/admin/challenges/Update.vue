@@ -29,7 +29,7 @@
           </div>
           <div v-else>Redirect.. You cannot access this page directly</div>
         </b-tab>
-        <b-tab title="Hints">Coming soon. Available in django admin          --- {{challenge}}</b-tab>
+        <b-tab title="Hints">Coming soon. Available in django admin <br><br>--- {{challenge}}</b-tab>
       </b-tabs>
     </b-card>
   </div>
