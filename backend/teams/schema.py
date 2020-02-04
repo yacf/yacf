@@ -322,9 +322,7 @@ class Graph(graphene.Mutation):
         # Construct time for all solved challenges.
         timeline = [0]
         for solve in solved:
-            print(solve.timestamp)
             timeline.append(solve.timestamp.strftime("%I:%M:%S"))
-
 
         return Graph(json.dumps(timeline), json.dumps(graph))
 

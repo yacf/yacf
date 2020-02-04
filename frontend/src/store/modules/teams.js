@@ -47,7 +47,7 @@ const actions = {
   FETCH_TEAMS({ commit }) {
     commit("SET_TEAMS_LOADING", true);
     api(
-      `query{ teams {id, name, affiliation, website, points, correctFlags, wrongFlags} totalPoints }`
+      `query{ teams(hidden:false) {id, name, affiliation, website, points, correctFlags, wrongFlags} totalPoints }`
     )
       .then(response => {
         if (response.errors) {

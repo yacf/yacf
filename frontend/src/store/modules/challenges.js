@@ -91,9 +91,9 @@ const actions = {
         payload.name
       }", description:${JSON.stringify(payload.description)}, encoded:${
         payload.encode
-      }, points:${payload.points}, flag:"${payload.flag}", algorithm:"${
-        payload.algorithm
-      }", precomputed:${payload.precomputed}, category:"${
+      }, points:${payload.points}, flag:"${payload.flag}", hashed:${
+        payload.hash
+      }, precomputed:${payload.precomputed}, category:"${
         payload.category
       }", hidden:${payload.hidden}) { code } }`
     )

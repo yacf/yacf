@@ -11,7 +11,7 @@
           <b-alert v-if="enter" show variant="success">This challenge has been solved!</b-alert>
           <b-tabs content-class="mt-3">
             <b-tab title="Challenge" active>
-              <span style="word-break: break-all" v-html="challenge.description"></span>
+              <span style="white-space: pre-wrap;" v-html="challenge.description"></span>
               <div v-if="!enter">
                 <b-input-group class="mt-3">
                   <b-form-input v-model="flag" v-on:keyup.enter="handleOk" required placeholder="Enter Flag"></b-form-input>

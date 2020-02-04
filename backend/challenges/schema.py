@@ -8,7 +8,7 @@ from uauth.validators import validate_user_is_authenticated, validate_user_is_ad
 from settings.validators import validate_active_event
 
 from categories.models import Category
-from challenges.models import Challenge, Flag, Hash, Hint
+from challenges.models import Challenge, Flag, Hint
 from teams.models import SolvedChallenge, Failure, FlagTracker
 from uauth.models import Profile
 
@@ -85,41 +85,29 @@ class AddChallenge(graphene.Mutation):
     class Arguments:
         name        = graphene.String(required=True)
         description = graphene.String(required=True)
-        encoded      = graphene.Boolean(required=False)
+        encoded     = graphene.Boolean(required=False)
         category    = graphene.String(required=True)
         points      = graphene.Int(required=False)
         flag        = graphene.String(required=True)
         precomputed = graphene.Boolean(required=True)
-        algorithm   = graphene.String(required=False)
+        hashed      = graphene.Boolean(required=False)
 
         hidden      = graphene.Boolean(required=False)
 
     #TODO: Need to check and ensure no challenge is made with the same points as another challenge. If not, frontend stats break
     #TODO: Just fix the frontend :) ^^
-    def mutate(self, info, name, description, category, flag, precomputed, algorithm="", points=0, encoded=False, hidden=False):
+    def mutate(self, info, name, description, category, flag, precomputed, hashed, points=0, encoded=False, hidden=False):
         validate_user_is_admin(info.context.user)
         get_category = Category.objects.get(name=category)
         
         newChallenge = Challenge(name=name, description=description, encoded=encoded, points=points, hidden=hidden, category=get_category)
         newChallenge.save()
 
-        get_algorithm = ""
-        if not algorithm or algorithm.lower() != "none":
-            get_algorithm = Hash.objects.get(value=algorithm)
-
-            if not precomputed:
-                if get_algorithm.value == 'md5':
-                    flag = hashlib.md5(flag.encode('utf-8')).hexdigest()
-                elif get_algorithm.value == 'sha224':
-                    flag = hashlib.sha224(flag.encode('utf-8')).hexdigest()
-                elif  get_algorithm.value == 'sha256':
-                    flag = hashlib.sha256(flag.encode('utf-8')).hexdigest()
-                else:
-                    raise Exception("Hashing algorithm selected doesn't match defined options")
-        
-                flag = Flag(value=flag, algorithm=get_algorithm, challenge=newChallenge)
+        if hashed:
+            if precomputed:
+                flag = Flag(value=flag, challenge=newChallenge)
             else:
-                flag = Flag(value=flag, algorithm=get_algorithm, challenge=newChallenge)
+                flag = Flag(value=hashlib.sha256(flag.encode('utf-8')).hexdigest(), challenge=newChallenge)
         else:
             flag = Flag(value=flag, challenge=newChallenge)
 
@@ -205,42 +193,27 @@ class SubmitFlag(graphene.Mutation):
         if team.solved.filter(challenge=challenge):
             raise Exception('Challenge already solved!')
 
-        try:
-            algorithm = challenge.flag.algorithm.value
-        except:
-            algorithm = None
-
         solved = False
-        if algorithm == None:
-            if challenge.flag.value == flag:
-                solved = True
-        elif algorithm == 'md5':
-            if challenge.flag.value == hashlib.md5(flag.encode('utf-8')).hexdigest():
-                solved = True
-        elif algorithm == 'sha224':
-            if challenge.flag.value == hashlib.sha224(flag.encode('utf-8')).hexdigest():
-                solved = True
-        elif algorithm == 'sha256':
+        if challenge.flag.hashed:
             if challenge.flag.value == hashlib.sha256(flag.encode('utf-8')).hexdigest():
                 solved = True
         else:
-            raise Exception('Error with flag algorithm')
+            if challenge.flag.value == flag:
+                solved = True
 
         if solved:
             solve = SolvedChallenge(team=team, user=info.context.user, challenge=challenge)
             solve.save()
-            FlagTracker
+
             '''
             Flag tracker
-
             '''
-            print(info.context.META.get('HTTP_X_FORWARDED_FOR'), info.context.META.get('HTTP_X_REAL_IP'), info.context.META.get('HTTP_USER_AGENT'))
-            # try:
-            flagtracker = FlagTracker(solve=solve, address=info.context.META.get('HTTP_X_FORWARDED_FOR'), agent=info.context.META.get('HTTP_USER_AGENT'))
-            flagtracker.save()
-            # except:
-            #     pass
-
+            # print(info.context.META.get('HTTP_X_FORWARDED_FOR'), info.context.META.get('HTTP_X_REAL_IP'), info.context.META.get('HTTP_USER_AGENT'))
+            try:
+                flagtracker = FlagTracker(solve=solve, address=info.context.META.get('HTTP_X_REAL_IP'), agent=info.context.META.get('HTTP_USER_AGENT'))
+                flagtracker.save()
+            except:
+                pass
 
             code=1
         else:

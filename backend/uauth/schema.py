@@ -140,8 +140,15 @@ class CreateAdmin(graphene.Mutation):
         profile = Profile(user=user, verified=True, hidden=True)
         profile.save()
 
-        registerkey.active = False
-        registerkey.save()
+        if registerkey.singleuse:
+            registerkey.active = False
+            registerkey.save()
+
+        try:
+            logintracker = LoginTracker(user=newUser, address=info.context.META.get('HTTP_X_REAL_IP'), agent=info.context.META.get('HTTP_USER_AGENT'))
+            logintracker.save()
+        except:
+            pass
 
         login(info.context, user)
 

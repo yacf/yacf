@@ -116,3 +116,4 @@ yarn-error.log*
 *.sw*
 
 postgres
+testing

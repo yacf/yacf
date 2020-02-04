@@ -15,15 +15,13 @@
       <input class="form-control" type="number" v-model="points" />
       <label>Challenge Flag:</label>
       <input class="form-control" v-model="flag" />
-      <label>Flag Hash:</label>
-      <select class="form-control" v-model="algorithm">
-        <option value="None" v-bind:default="true">None</option>
-        <option value="md5">MD5</option>
-        <option value="sha224">SHA224</option>
-        <option value="sha256">SHA256</option>
-      </select>
+      
+      <b-form-checkbox v-model="hash" value="true" unchecked-value="false">SAH256 Hash</b-form-checkbox>
+      <b-form-text>Checked to have the flag sha256 hashed before stored.</b-form-text>
+
       <b-form-checkbox v-model="precomputed" value="true" unchecked-value="false">Precomputed</b-form-checkbox>
-      <b-form-text>Check this if you already hashed your the flag. Otherwise, the flag will be hashed for you when the challenge is created</b-form-text>
+      <b-form-text>Check if the flag is already sha256 hashed.</b-form-text>
+      
       <label>Challenge Category:</label>
       <select class="form-control" v-model="category">
         <option value="None" v-bind:default="true">None</option>
@@ -52,6 +50,7 @@ export default {
       points: "",
       flag: "",
       algorithm: "None",
+      hash: false,
       precomputed: false,
       category: "None",
       hidden: false,
@@ -77,8 +76,7 @@ export default {
         this.name &&
         this.description &&
         this.points &&
-        this.flag &&
-        this.algorithm
+        this.flag
       ) {
         let description = "";
         this.encode
@@ -90,7 +88,7 @@ export default {
           encode: this.encode,
           points: this.points,
           flag: this.flag,
-          algorithm: this.algorithm,
+          hash: this.hash,
           precomputed: this.precomputed,
           category: this.category,
           hidden: this.hidden

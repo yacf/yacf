@@ -5,7 +5,7 @@ class Challenge(models.Model):
     # TODO: REMOVE delete on cascade! We may not want to delete all the challenges too
     category = models.ForeignKey(Category, null=False, on_delete=models.CASCADE, related_name='challenges')
 
-    name = models.CharField(max_length=25, unique=True)
+    name = models.CharField(max_length=40, unique=True)
     description = models.CharField(max_length=1000)
 
     points = models.IntegerField(default=0)
@@ -28,16 +28,10 @@ class Hint(models.Model):
     def __str__(self):
         return self.challenge.name
 
-class Hash(models.Model):
-    value = models.CharField(max_length=10)
-
-    def __str__(self):
-        return self.value
-
 class Flag(models.Model):
     challenge = models.OneToOneField(Challenge, on_delete=models.CASCADE, related_name='flag')
     value = models.CharField(max_length=100)
-    algorithm = models.ForeignKey(Hash, null=True, blank=True, on_delete=models.SET_NULL, related_name='hash')
+    hashed = models.BooleanField(default=False)
 
     def __str__(self):
         return self.challenge.name

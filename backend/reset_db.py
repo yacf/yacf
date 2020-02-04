@@ -12,7 +12,7 @@ from django.contrib.auth.models import User
 from uauth.models import Profile
 from teams.models import Team, AccessCode
 from categories.models import Category
-from challenges.models import Challenge, Flag, Hash
+from challenges.models import Challenge, Flag
 from uauth.validators import validate_username, validate_password, validate_email
 
 from random import randint
@@ -69,13 +69,6 @@ def makeCategories():
         cat.save()
 
 def makeChallenges():
-    md5  = Hash(value="md5")
-    md5.save()
-    sha224 = Hash(value="sha224")
-    sha224.save()
-    sha256 = Hash(value="sha256")
-    sha256.save()
-
     ctf_categories = ['Web', 'Pwn', 'Crypto', 'Reverse', 'Triva', 'Script']
     ctf_challenge_points = [100, 200, 300, 400, 500]
 
@@ -83,9 +76,9 @@ def makeChallenges():
         cat = Category.objects.get(name=category)
         for challenge_points in ctf_challenge_points:
             chal_str = "%s %s" % (category, str(challenge_points))
-            chal = Challenge(category=cat, name=chal_str, description="{0} challenge".format(chal_str), points=challenge_points, hidden=True)
+            chal = Challenge(category=cat, name=chal_str, description="{0} challenge".format(chal_str), points=challenge_points, hidden=False)
             chal.save()
-            flag = Flag(value=hashlib.md5('flag'.encode('utf-8')).hexdigest(), algorithm=md5, challenge=chal)
+            flag = Flag(value=hashlib.sha256('flag'.encode('utf-8')).hexdigest(), hashed=True, challenge=chal)
             flag.save()
     
 if __name__ == "__main__":
