@@ -12,6 +12,9 @@ import string, random, json
 from settings.models import Event
 from teams.models import Team, AccessCode, SolvedChallenge, Failure, FlagTracker
 
+import pytz
+from django.utils import timezone
+
 class TeamType(DjangoObjectType):
     points = graphene.Int()
     members = graphene.Int()
@@ -322,7 +325,10 @@ class Graph(graphene.Mutation):
         # Construct time for all solved challenges.
         timeline = [0]
         for solve in solved:
-            timeline.append(solve.timestamp.strftime("%I:%M:%S"))
+            utc = solve.timestamp.replace(tzinfo=pytz.UTC)
+            localtz = utc.astimezone(timezone.get_current_timezone())
+            # "%m/%d %I:%M:%S"
+            timeline.append(localtz.strftime("%I:%M:%S"))
 
         return Graph(json.dumps(timeline), json.dumps(graph))
 
