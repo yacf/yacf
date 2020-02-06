@@ -6,7 +6,7 @@ class Challenge(models.Model):
     category = models.ForeignKey(Category, null=False, on_delete=models.CASCADE, related_name='challenges')
 
     name = models.CharField(max_length=40, unique=True)
-    description = models.CharField(max_length=1000)
+    description = models.CharField(max_length=3000)
 
     points = models.IntegerField(default=0)
     encoded = models.BooleanField(default=False)
