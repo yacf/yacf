@@ -14,8 +14,8 @@ from uauth.models import Profile
 
 def resetDjangoDB():
     # Remove database file if exists
-    #with contextlib.suppress(FileNotFoundError):
-    #    os.remove(DATABASES['default']['NAME'])
+    with contextlib.suppress(FileNotFoundError):
+       os.remove(DATABASES['default']['NAME'])
 
     # Remove migrations
     os.system('find . -path "*/migrations/*.py" -not -name "__init__.py" -delete')

@@ -178,7 +178,11 @@ class SubmitFlag(graphene.Mutation):
 
     def mutate(self, info, challenge, flag):
         validate_user_is_authenticated(info.context.user)
-        validate_active_event()
+
+        # If user is not staff validate there is an active event.
+        if not validate_user_is_staff(info.context.user):
+            validate_active_event()
+        
         try:
             team = Profile.objects.get(user=info.context.user).team
         except:

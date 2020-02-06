@@ -145,7 +145,7 @@ class CreateAdmin(graphene.Mutation):
             registerkey.save()
 
         try:
-            logintracker = LoginTracker(user=newUser, address=info.context.META.get('HTTP_X_REAL_IP'), agent=info.context.META.get('HTTP_USER_AGENT'))
+            logintracker = LoginTracker(user=user, address=info.context.META.get('HTTP_X_REAL_IP'), agent=info.context.META.get('HTTP_USER_AGENT'))
             logintracker.save()
         except:
             pass

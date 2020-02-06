@@ -254,9 +254,6 @@ main div {
  * Copyright 2013-2019 Start Bootstrap
  * Licensed under MIT (https://github.com/BlackrockDigital/startbootstrap-simple-sidebar/blob/master/LICENSE)
  */
-body {
-  overflow-x: hidden;
-}
 
 #sidebar-wrapper {
   min-height: 100vh;
@@ -406,19 +403,21 @@ label {
 
 // #######################################################
 
-body {
+body,html {
   background-color: #f3f3f3;
   
 }
 #app {
   background-color: #f3f3f3;
-  height: 100vh;
+  height: 100%;
   font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   /* text-align: center; */
   color: #2c3e50;
 }
+
+
 #nav {
   padding: 30px;
 }
