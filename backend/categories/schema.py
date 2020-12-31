@@ -12,15 +12,34 @@ class CategoryType(DjangoObjectType):
         model = Category
 
 class Query(graphene.ObjectType):
-    categories = graphene.List(CategoryType)
+    category = graphene.Field(CategoryType, id=graphene.Int())
+    categories = graphene.List(CategoryType, first=graphene.Int(), skip=graphene.Int())
+    categories_count = graphene.Int()
 
-    def resolve_categories(self, info, **kwargs):
+    def resolve_category(self, info, id=None, **kwargs):
+        if validate_user_is_staff(info.context.user):
+            return Category.objects.get(id=id)
+        else:
+            raise Exception("Bad permissions.")
+
+    def resolve_categories(self, info, first=None, skip=None, **kwargs):
         validate_user_is_authenticated(info.context.user)
         if validate_user_is_staff(info.context.user):
-            return Category.objects.all()
+            categories = Category.objects.all()
+            if skip is not None : 
+                categories = categories[skip:]
+            if first is not None: 
+                categories = categories[:first]
+            return categories
         else:
             validate_active_event()
             return Category.objects.filter(hidden=False)
+
+    def resolve_categories_count(self, info, **kwargs):
+        if validate_user_is_staff(info.context.user):
+            return Category.objects.count()
+        else:
+            raise Exception("You are not authorized to view this information.")
 
 # ------------------- MUTATIONS -------------------
 

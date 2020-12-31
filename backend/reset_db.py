@@ -42,6 +42,9 @@ def makeTeam(team_name, hidden, accesscode):
     team.save()
     AccessCode(team=team, value=accesscode).save()
 
+    for x in range(1,6):
+        makeUser("user" + str(x) + "_" + team_name, "user" + str(x) + "-" + team_name + "@yactf.com", "password", team, True)
+
     return team
 
 def makeUser(user_name, user_email, user_password, user_team, hidden):
@@ -98,23 +101,16 @@ if __name__ == "__main__":
     # makeAdminUser(args.admin_name, args.admin_email, args.admin_password, True)
     makeAdminUser()
 
-    #Create some teams
-    team1 = makeTeam("Team1", False, "1")
-    team2 = makeTeam("Team2", False, "2")
-    team3 = makeTeam("Team3", False, "3")
-    team4 = makeTeam("Team4", False, "4")
-    team5 = makeTeam("Team5", False, "5")
-
-    #Make empty teams
-    for x in range(6,100):
+    #Make teams with 5 users
+    for x in range(1,100):
         makeTeam("Team"+str(x), False, x)
 
-    # Create some player users
-    makeUser("user1", "user1@yactf.com", "Password123!", team1, True)
-    makeUser("user2", "user2@yactf.com", "Password123!", team2, True)
-    makeUser("user3", "user3@yactf.com", "Password123!", team3, True)
-    makeUser("user4", "user4@yactf.com", "Password123!", team4, True)
-    makeUser("user5", "user5@yactf.com", "Password123!", team5, True)
+    # # Create some player users
+    # makeUser("user1", "user1@yactf.com", "Password123!", team1, True)
+    # makeUser("user2", "user2@yactf.com", "Password123!", team2, True)
+    # makeUser("user3", "user3@yactf.com", "Password123!", team3, True)
+    # makeUser("user4", "user4@yactf.com", "Password123!", team4, True)
+    # makeUser("user5", "user5@yactf.com", "Password123!", team5, True)
 
     # Create challenge categories if requested
     # if args.create_categories:

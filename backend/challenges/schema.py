@@ -15,11 +15,23 @@ from uauth.models import Profile
 class ChallengeType(DjangoObjectType):
     class Meta:
         model = Challenge
-        exclude_fields = ('flag')
+        # exclude_fields = ['flag']
 
 class FlagType(DjangoObjectType):
+    value  = graphene.String()
+    hashed = graphene.Boolean() 
+
+    def resolve_value(self, info):
+        validate_user_is_admin(info.context.user)
+        return self.value
+
+    def resolve_hashed(self, info):
+        validate_user_is_admin(info.context.user)
+        return self.hashed
+
     class Meta:
         model = Flag
+        exclude_fields = ['challenge']
 
 class HintType(DjangoObjectType):
     class Meta:
@@ -37,6 +49,9 @@ class HintType(DjangoObjectType):
 class Query(graphene.ObjectType):
     challenges = graphene.List(ChallengeType, first=graphene.Int(), skip=graphene.Int())
     challenge = graphene.Field(ChallengeType, id=graphene.Int())
+
+    challenge_count = graphene.Int()
+
     flag = graphene.Field(FlagType, cid=graphene.Int())
 
     statistic = graphene.Field(ChallengeType, category=graphene.String(), points=graphene.Int())
@@ -45,7 +60,7 @@ class Query(graphene.ObjectType):
     def resolve_challenges(self, info, first=None, skip=None, **kwargs):
         validate_user_is_authenticated(info.context.user)
         if validate_user_is_staff(info.context.user):
-            challenges = Challenge.objects.all().order_by('points')
+            challenges = Challenge.objects.all().order_by('name')
             if skip is not None : 
                 challenges = challenges[skip:]
             if first is not None: 
@@ -62,6 +77,12 @@ class Query(graphene.ObjectType):
         else:
             validate_active_event()
             return Challenge.objects.get(pk=kwargs.get('id'), hidden=False)
+
+    def resolve_challenge_count(self, info, **kwargs):
+        if validate_user_is_staff(info.context.user):
+            return Challenge.objects.count()
+        else:
+            raise Exception("You are not authorized to view this information.")
 
     def resolve_flag(self, info, **kwargs):
         validate_user_is_admin(info.context.user)

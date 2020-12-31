@@ -64,8 +64,8 @@ export default {
     api("query { teams(hidden:false){ id } }").then(response => {
       self.teams = response.data.teams.length;
     });
-    api("query { users(hidden:false) { id } }").then(response => {
-      self.users = response.data.users.length;
+    api("query { userCount }").then(response => {
+      self.users = response.data.userCount;
     });
     api(
       "query { solves { id } }"

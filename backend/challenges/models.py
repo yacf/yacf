@@ -12,6 +12,9 @@ class Challenge(models.Model):
     encoded = models.BooleanField(default=False)
     hidden = models.BooleanField(default=False)
 
+    resubmit = models.BooleanField(default=False)
+    release_time = models.DateTimeField(null=True)
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -29,9 +32,12 @@ class Hint(models.Model):
         return self.challenge.name
 
 class Flag(models.Model):
-    challenge = models.OneToOneField(Challenge, on_delete=models.CASCADE, related_name='flag')
     value = models.CharField(max_length=100)
     hashed = models.BooleanField(default=False)
+    case_sensitive = models.BooleanField(default=True)
+    resubmit = models.BooleanField(default=False)
+
+    challenge = models.OneToOneField(Challenge, on_delete=models.CASCADE, related_name='flag')
 
     def __str__(self):
         return self.challenge.name

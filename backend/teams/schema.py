@@ -54,6 +54,7 @@ class FlagTrackerType(DjangoObjectType):
 
 class Query(graphene.ObjectType):
     teams = graphene.List(TeamType, hidden=graphene.Boolean(), first=graphene.Int(), skip=graphene.Int())
+    team_count = graphene.Int()
     solves = graphene.List(SolvedChallengeType, first=graphene.Int(), skip=graphene.Int())
     failures = graphene.List(FailureType, first=graphene.Int(), skip=graphene.Int())
 
@@ -70,11 +71,11 @@ class Query(graphene.ObjectType):
         validate_user_is_authenticated(info.context.user)
         if validate_user_is_staff(info.context.user):
             if hidden is True:
-                return Team.objects.filter(hidden=True)
+                teams = Team.objects.filter(hidden=True)
             elif hidden is False:
-                return Team.objects.filter(hidden=False)
+                teams = Team.objects.filter(hidden=False)
             else:
-                return Team.objects.all()
+                teams = Team.objects.all()
         else:
             if Event.objects.first() and Event.objects.first().private is True:
                 raise Exception("This event is being run in privacy mode. You are not allowed to query all teams.")
@@ -88,6 +89,12 @@ class Query(graphene.ObjectType):
             teams = teams[:first]
         
         return teams
+
+    def resolve_team_count(self, info, **kwargs):
+        if validate_user_is_staff(info.context.user):
+            return Team.objects.count()
+        else:
+            raise Exception("You are not authorized to view this information.")
 
     def resolve_team_name(self, info, **kwargs):
         validate_user_is_authenticated(info.context.user)

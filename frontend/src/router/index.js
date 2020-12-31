@@ -86,9 +86,9 @@ export default new Router({
           component: () => import("@/views/admin/categories/Create")
         },
         {
-          path: "/admin/category/update",
+          path: "/admin/category/view",
           name: "AdminCategoryEdit",
-          component: () => import("@/views/admin/categories/Update"),
+          component: () => import("@/views/admin/categories/View"),
           props: true
         },
         {
@@ -102,10 +102,9 @@ export default new Router({
           component: () => import("@/views/admin/challenges/Create")
         },
         {
-          path: "/admin/challenge/update",
+          path: "/admin/challenge/view",
           name: "AdminChallengeEdit",
-          component: () => import("@/views/admin/challenges/Update"),
-          props: true
+          component: () => import("@/views/admin/challenges/View"),
         },
         {
           path: "/admin/teams",
@@ -118,21 +117,20 @@ export default new Router({
           component: () => import("@/views/admin/teams/Create")
         },
         {
-          path: "/admin/team/update",
-          name: "AdminTeamEdit",
-          component: () => import("@/views/admin/teams/Update"),
+          path: "/admin/team/view",
+          name: "AdminTeamView",
+          component: () => import("@/views/admin/teams/View"),
           props: true
         },
         {
           path: "/admin/users",
           name: "AdminUsers",
-          component: () => import("@/views/admin/Users")
+          component: () => import("@/views/admin/users/Users")
         },
         {
-          path: "/admin/user/edit",
-          name: "AdminUserEdit",
-          component: () => import("@/views/admin/Edit/User"),
-          props: true
+          path: "/admin/user/view",
+          name: "AdminUserView",
+          component: () => import("@/views/admin/users/View"),
         },
         {
           path: "/admin/surveys",

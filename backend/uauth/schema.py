@@ -3,6 +3,7 @@ from graphene_django import DjangoObjectType
 from uauth.validators import validate_user_is_authenticated, validate_user_is_admin, validate_user_is_staff, validate_password
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
+from django.db.models import Q
 
 from uauth.models import AdminRegisterKey, Profile
 from logs.models import LoginTracker
@@ -14,12 +15,12 @@ from django.utils import timezone
 class Me(DjangoObjectType):
     class Meta:
         model = User
-        exclude_fields = ('password')
+        exclude_fields = ['password']
 
 class UserType(DjangoObjectType):
     class Meta:
         model = User
-        exclude_fields = ('password')
+        exclude_fields = ['password']
 
     # def resolve_is_superuser(self, info):
     #     if validate_user_is_staff(info.context.user):
@@ -60,23 +61,52 @@ class LoginTrackerType(DjangoObjectType):
         model = LoginTracker
 
 class Query(object):
-    users = graphene.List(UserType, hidden=graphene.Boolean())
+    users = graphene.List(UserType, search=graphene.String(), first=graphene.Int(), skip=graphene.Int(), hidden=graphene.Boolean())
+    user = graphene.Field(UserType, id=graphene.Int())
+    user_count = graphene.Int()
+
     me = graphene.Field(Me)
     profile = graphene.Field(ProfileType)
 
     login_tracker = graphene.List(LoginTrackerType)
 
-    def resolve_users(self, info, hidden=None):
+    def resolve_users(self, info, search=None, first=None, skip=None, hidden=None):
         validate_user_is_admin(info.context.user)
         if validate_user_is_staff(info.context.user):
             if hidden is True:
-                return User.objects.filter(profile__hidden=True)
+                users = User.objects.filter(profile__hidden=True)
             elif hidden is False:
-                return User.objects.filter(profile__hidden=False)
+                users = User.objects.filter(profile__hidden=False)
             else:
-                return User.objects.all()
+                users = User.objects.all()
+            
+            if search:
+                users = users.filter(Q(username__icontains=search) | Q(first_name__icontains=search) | Q(last_name__icontains=search))
+
+            if skip is not None : 
+                users = users[skip:]
+            if first is not None: 
+                users = users[:first]
+            
+            return users
         else:
             raise Exception('Not authorized to view query users')
+
+    def resolve_user(self, info, id=None):
+        validate_user_is_admin(info.context.user)
+        if validate_user_is_staff(info.context.user):
+            if id:
+                return User.objects.get(id=id)
+            else:
+                raise Exception('No user ID was provided')
+        else:
+            raise Exception('Not authorized to view query users')
+
+    def resolve_user_count(self, info, **kwargs):
+        if validate_user_is_staff(info.context.user):
+            return User.objects.count()
+        else:
+            raise Exception("You are not authorized to view this information.")
 
     def resolve_me(self, info):
         validate_user_is_authenticated(info.context.user)

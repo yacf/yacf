@@ -4,9 +4,16 @@
     <b-alert v-for="(error, index) in categories.errors" :key="index" show variant="danger">{{error.message}}</b-alert>
     <div v-if="categories.loading">Loading</div>
     <div v-else>
-      <div class="newOpt">
-        <button class="btn btn-secondary" @click="$router.push({ name: 'AdminCategoriesCreate'});">New Category</button>
-      </div>
+      <b-row>
+        <b-col md="6">
+          <div>
+            <button class="btn btn-secondary" @click="$router.push({ name: 'AdminCategoriesCreate'});">New Category</button>
+          </div>
+        </b-col>
+        <b-col md="6">
+          <pagination :count="categoriesCount" @clicked="emitevent" />
+        </b-col>
+      </b-row>
       <b-card header="Categories" header-tag="header">
         <table id="admincategories" class="table table-sm table-hover">
           <thead>
@@ -18,14 +25,14 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="category in categories.data" v-bind:key="category.id">
+            <tr v-for="category in categories" v-bind:key="category.id">
               <td>{{category.name}}</td>
               <td>{{category.description}}</td>
               <!-- <td>Blah</td> -->
               <td>
                 <div>
-                  <RemoveCategory :category="category" />
-                  <router-link tag="button" class="btn btn-secondary btn-sm" style="float: right" :to="{ name: 'AdminCategoryEdit', params: { category: category } }">Edit</router-link>
+                  <!-- <RemoveCategory :category="category" /> -->
+                  <router-link tag="button" class="btn btn-secondary btn-sm" style="float: right" :to="{ name: 'AdminCategoryEdit', query: { id: category.id } }"><b-icon icon="arrow-up-right"></b-icon></router-link>
                 </div>
               </td>
             </tr>
@@ -36,23 +43,49 @@
   </div>
 </template>
 
-
 <script>
-import { mapGetters } from "vuex";
+
+
+import Pagination from "@/components/general/pagination";
+import { categoriesQuery, categoriesCountQuery } from "@/api/queries/categories";
 import RemoveCategory from "@/components/admin/remove/category.vue";
 
 export default {
   name: "AdminCategory",
   components: {
+    Pagination,
     RemoveCategory
   },
-  computed: {
-    ...mapGetters({
-      categories: "categories/GET_CATEGORIES"
-    })
+  data() {
+    return {
+      categories: [],
+      categoriesCount: 0,
+      page: 1,
+      rows: 25,
+    }
   },
-  beforeMount() {
-    this.$store.dispatch("categories/FETCH_CATEGORIES");
+  apollo: {
+    categories: {
+      query: categoriesQuery('id name description'),
+      variables() {
+        return {
+          skip: (this.page - 1) * this.rows,
+          first: this.rows,
+        };
+      },
+    },
+    categoriesCount: {
+      query: categoriesCountQuery()
+    }
+  },
+  methods: {
+    emitevent(value) {
+      if ("page" in value) {
+        this.page = value.page;
+      } else if ("rows" in value) {
+        this.rows = value.rows;
+      }
+    },
   }
 };
 </script>

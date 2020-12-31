@@ -31,6 +31,7 @@ class Team(models.Model):
     email = models.CharField(max_length=50, blank=True)
     affiliation = models.CharField(max_length=50, blank=True)
     website = models.CharField(max_length=50, blank=True)
+    picture = models.CharField(max_length=200, null=True)
 
     points = property(_points)
     members = property(_members)
