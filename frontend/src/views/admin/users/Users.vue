@@ -1,23 +1,26 @@
 <template>
   <div class="offset">
     <b-breadcrumb :items="[{ text: 'Mission', to: { name: 'AdminMission' } },{ text: 'Users', href: '#' }]"></b-breadcrumb>
+    <b-row>
+      <b-col md="3">
+        <b-input-group prepend="Search">
+          <b-form-input v-model="search"></b-form-input>
+          <b-input-group-append>
+            <b-button><b-icon icon="arrow-right"></b-icon></b-button>
+          </b-input-group-append>
+        </b-input-group>
+      </b-col>
+      <b-col md="9">
+        <pagination :count="users.totalCount" @clicked="emitevent" />
+      </b-col>
+    </b-row>
+
+      <div style="text-align: right;" v-if="!this.$apollo.queries.users.loading">
+        Viewing: {{(this.page.id - 1) * this.rows + 1}}-{{(this.page.id - 1) * this.rows + this.rows}} of {{users.totalCount}}
+      </div>
 
     <template v-if="this.$apollo.queries.users.loading">Loading...</template>
     <template v-else>
-      {{search}}
-      <b-row>
-        <b-col md="3">
-          <b-input-group prepend="Search">
-            <b-form-input v-model="search"></b-form-input>
-            <b-input-group-append>
-              <b-button><b-icon icon="arrow-right"></b-icon></b-button>
-            </b-input-group-append>
-          </b-input-group>
-        </b-col>
-        <b-col md="9">
-          <pagination :count="userCount" @clicked="emitevent" />
-        </b-col>
-      </b-row>
       <b-card header="Users" header-tag="header">
         <table id="adminteams" class="table table-sm table-hover">
           <thead>
@@ -32,12 +35,12 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="user in users" v-bind:key="user.id">
-              <td>{{user.username}}</td>
-              <td>{{user.firstName}}</td>
-              <td>{{user.lastName}}</td>
-              <td>{{user.email}}</td>
-              <td v-if="user.profile.team">{{user.profile.team.name}}</td>
+            <tr v-for="user in users.edges" v-bind:key="user.id">
+              <td>{{user.node.id}}-{{user.node.username}}</td>
+              <td>{{user.node.firstName}}</td>
+              <td>{{user.node.lastName}}</td>
+              <td>{{user.node.email}}</td>
+              <td v-if="user.node.profile.team">{{user.node.profile.team.name}}</td>
               <td v-else>
                 <b-badge variant="warning">No Team</b-badge>
               </td>
@@ -67,30 +70,36 @@ export default {
   components: { Pagination },
   data() {
     return {
-      page: 1,
+      users: {
+        totalCount: null
+      },
+      page: {
+        id: 1,
+        cursor: null
+      },
       rows: 15,
       search: null
     };
   },
   apollo: {
     users: {
-      query: usersQuery('id username firstName lastName email isSuperuser profile { team { name } }'),
+      query: usersQuery('totalCount edges { node { id username firstName lastName email isSuperuser profile { team { name } } } }'),
       variables() {
         return {
-          skip: (this.page - 1) * this.rows,
           first: this.rows,
-          // search: this.search
+          after: this.page.cursor,
+          search: this.search
         };
       },
-    },
-    userCount: {
-      query: userCountQuery()
     }
   },
   methods: {
     emitevent(value) {
       if ("page" in value) {
-        this.page = value.page;
+        console.log(value)
+        this.page.id = value.page;
+        console.log((value.page-1)*this.rows)
+        this.page.cursor = btoa(`arrayconnection:${(value.page-1)*this.rows-1}`);
       } else if ("rows" in value) {
         this.rows = value.rows;
       }

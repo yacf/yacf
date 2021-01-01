@@ -2,8 +2,8 @@ import gql from "graphql-tag";
 
 export function usersQuery(payload, fragment='') {
     return gql`
-    query($first:Int, $skip:Int) {
-        users(first: $first, skip: $skip) {
+    query($first: Int, $after:String, $search:String) {
+        users(first:$first, after:$after, search:$search) {
           ${payload}
         }
       }
