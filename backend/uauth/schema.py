@@ -70,7 +70,6 @@ class UserConnection(relay.Connection):
         return self.iterable.count()
 
 class Query(object):
-    # users = graphene.List(UserType, search=graphene.String(), first=graphene.Int(), skip=graphene.Int(), hidden=graphene.Boolean())
     user = graphene.Field(UserType, id=graphene.Int())
     user_count = graphene.Int()
 
@@ -84,32 +83,9 @@ class Query(object):
     def resolve_users(root, info, search=None, **kwargs):
         validate_user_is_admin(info.context.user)
         if search:
-            return User.objects.filter(Q(username__icontains=search) | Q(first_name__icontains=search) | Q(last_name__icontains=search))
+            return User.objects.filter(Q(username__icontains=search) | Q(first_name__icontains=search) | Q(last_name__icontains=search) | Q(email__icontains=search))
         else:
             return User.objects.all()
-
-
-    # def resolve_users(self, info, search=None, first=None, skip=None, hidden=None):
-    #     validate_user_is_admin(info.context.user)
-    #     if validate_user_is_staff(info.context.user):
-    #         if hidden is True:
-    #             users = User.objects.filter(profile__hidden=True)
-    #         elif hidden is False:
-    #             users = User.objects.filter(profile__hidden=False)
-    #         else:
-    #             users = User.objects.all()
-            
-    #         if search:
-    #             users = users.filter(Q(username__icontains=search) | Q(first_name__icontains=search) | Q(last_name__icontains=search))
-
-    #         if skip is not None : 
-    #             users = users[skip:]
-    #         if first is not None: 
-    #             users = users[:first]
-            
-    #         return users
-    #     else:
-    #         raise Exception('Not authorized to view query users')
 
     def resolve_user(self, info, id=None):
         validate_user_is_admin(info.context.user)
@@ -120,12 +96,6 @@ class Query(object):
                 raise Exception('No user ID was provided')
         else:
             raise Exception('Not authorized to view query users')
-
-    def resolve_user_count(self, info, **kwargs):
-        if validate_user_is_staff(info.context.user):
-            return User.objects.count()
-        else:
-            raise Exception("You are not authorized to view this information.")
 
     def resolve_me(self, info):
         validate_user_is_authenticated(info.context.user)

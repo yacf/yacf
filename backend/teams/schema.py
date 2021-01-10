@@ -3,6 +3,7 @@ from asgiref.sync import async_to_sync
 from django.db.models import Q
 
 import graphene
+from graphene import relay
 from graphene_django import DjangoObjectType
 from uauth.validators import validate_user_is_authenticated, validate_user_is_admin, validate_user_is_staff
 from uauth.models import Profile
@@ -52,9 +53,20 @@ class FlagTrackerType(DjangoObjectType):
     class Meta:
         model = FlagTracker
 
+class TeamConnection(relay.Connection):
+    class Meta:
+        node = TeamType
+
+    total_count = graphene.Int()
+    def resolve_total_count(self, info, **kwargs):
+        return self.iterable.count()
+
 class Query(graphene.ObjectType):
-    teams = graphene.List(TeamType, hidden=graphene.Boolean(), first=graphene.Int(), skip=graphene.Int())
-    team_count = graphene.Int()
+    # teams = graphene.List(TeamType, hidden=graphene.Boolean(), first=graphene.Int(), skip=graphene.Int())
+    # team_count = graphene.Int()
+
+    teams = relay.ConnectionField(TeamConnection, search=graphene.String())
+
     solves = graphene.List(SolvedChallengeType, first=graphene.Int(), skip=graphene.Int())
     failures = graphene.List(FailureType, first=graphene.Int(), skip=graphene.Int())
 
@@ -67,34 +79,41 @@ class Query(graphene.ObjectType):
 
     flag_tracker = graphene.List(FlagTrackerType)
 
-    def resolve_teams(self, info, hidden=None, first=None, skip=None, **kwargs):
-        validate_user_is_authenticated(info.context.user)
-        if validate_user_is_staff(info.context.user):
-            if hidden is True:
-                teams = Team.objects.filter(hidden=True)
-            elif hidden is False:
-                teams = Team.objects.filter(hidden=False)
-            else:
-                teams = Team.objects.all()
-        else:
-            if Event.objects.first() and Event.objects.first().private is True:
-                raise Exception("This event is being run in privacy mode. You are not allowed to query all teams.")
-            else:
-                teams = Team.objects.filter(hidden=False)
+    # def resolve_teams(self, info, hidden=None, first=None, skip=None, **kwargs):
+    #     validate_user_is_authenticated(info.context.user)
+    #     if validate_user_is_staff(info.context.user):
+    #         if hidden is True:
+    #             teams = Team.objects.filter(hidden=True)
+    #         elif hidden is False:
+    #             teams = Team.objects.filter(hidden=False)
+    #         else:
+    #             teams = Team.objects.all()
+    #     else:
+    #         if Event.objects.first() and Event.objects.first().private is True:
+    #             raise Exception("This event is being run in privacy mode. You are not allowed to query all teams.")
+    #         else:
+    #             teams = Team.objects.filter(hidden=False)
 
 
-        if skip is not None : 
-            teams = teams[skip:]
-        if first is not None: 
-            teams = teams[:first]
+    #     if skip is not None : 
+    #         teams = teams[skip:]
+    #     if first is not None: 
+    #         teams = teams[:first]
         
-        return teams
+    #     return teams
 
-    def resolve_team_count(self, info, **kwargs):
-        if validate_user_is_staff(info.context.user):
-            return Team.objects.count()
+    # def resolve_team_count(self, info, **kwargs):
+    #     if validate_user_is_staff(info.context.user):
+    #         return Team.objects.count()
+    #     else:
+    #         raise Exception("You are not authorized to view this information.")
+
+    def resolve_teams(root, info, search=None, **kwargs):
+        validate_user_is_admin(info.context.user)
+        if search:
+            return Team.objects.filter(Q(name__icontains=search) | Q(email__icontains=search) | Q(affiliation__icontains=search) | Q(website__icontains=search))
         else:
-            raise Exception("You are not authorized to view this information.")
+            return Team.objects.all()
 
     def resolve_team_name(self, info, **kwargs):
         validate_user_is_authenticated(info.context.user)

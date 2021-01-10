@@ -2,8 +2,8 @@ import gql from "graphql-tag";
 
 export function teamsQuery(payload, fragment='') {
     return gql`
-    query($first:Int, $skip:Int) {
-        teams(first: $first, skip: $skip) {
+    query($first: Int, $after:String, $search:String) {
+      teams(first:$first, after:$after, search:$search) {
           ${payload}
         }
       }
